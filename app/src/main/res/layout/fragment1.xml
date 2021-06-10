@@ -27,371 +27,530 @@
         android:text="Test" />
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="Array list"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="Linked list"
+            android:textStyle="bold"
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="Copy on write list"
+            android:textStyle="bold"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+    <TextView
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:text="Filling collections"
+        android:textStyle="bold"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ProgressBar
             android:id="@+id/pb1"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_marginStart="10dp"/>
 
         <TextView
             android:id="@+id/time1"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"/>
 
         <ProgressBar
             android:id="@+id/pb9"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:indeterminate="true"
             android:visibility="invisible" />
 
         <TextView
             android:id="@+id/time9"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
         <ProgressBar
             android:id="@+id/pb17"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:indeterminate="true"
             android:visibility="invisible" />
 
         <TextView
             android:id="@+id/time17"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
     </LinearLayout>
-
-    <LinearLayout
+    <TextView
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:text="Add in beginning"
+        android:textStyle="bold"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ProgressBar
             android:id="@+id/pb2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <TextView
             android:id="@+id/time2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <ProgressBar
             android:id="@+id/pb10"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time10"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
         <ProgressBar
             android:id="@+id/pb18"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time18"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
     </LinearLayout>
-
-    <LinearLayout
+    <TextView
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:text="Add in middle"
+        android:textStyle="bold"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ProgressBar
             android:id="@+id/pb3"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <TextView
             android:id="@+id/time3"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <ProgressBar
             android:id="@+id/pb11"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time11"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
         <ProgressBar
             android:id="@+id/pb19"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time19"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
 
     </LinearLayout>
-
-    <LinearLayout
+    <TextView
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:text="Add in end"
+        android:textStyle="bold"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ProgressBar
             android:id="@+id/pb4"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <TextView
             android:id="@+id/time4"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <ProgressBar
             android:id="@+id/pb12"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time12"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
         <ProgressBar
             android:id="@+id/pb20"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time20"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
     </LinearLayout>
-
-    <LinearLayout
+    <TextView
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:text="Search"
+        android:textStyle="bold"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ProgressBar
             android:id="@+id/pb5"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <TextView
             android:id="@+id/time5"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <ProgressBar
             android:id="@+id/pb13"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time13"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
         <ProgressBar
             android:id="@+id/pb21"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time21"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
     </LinearLayout>
-
-    <LinearLayout
+    <TextView
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:text="Remove in the beginning"
+        android:textStyle="bold"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ProgressBar
             android:id="@+id/pb6"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <TextView
             android:id="@+id/time6"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <ProgressBar
             android:id="@+id/pb14"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time14"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
         <ProgressBar
             android:id="@+id/pb22"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time22"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
     </LinearLayout>
-
-    <LinearLayout
+    <TextView
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:text="Remove in the middle"
+        android:textStyle="bold"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ProgressBar
             android:id="@+id/pb7"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <TextView
             android:id="@+id/time7"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <ProgressBar
             android:id="@+id/pb15"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"
+            />
 
         <TextView
             android:id="@+id/time15"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1" />
 
         <ProgressBar
             android:id="@+id/pb23"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time23"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
 
     </LinearLayout>
-
-    <LinearLayout
+    <TextView
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:text="Remove in the end"
+        android:textStyle="bold"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ProgressBar
             android:id="@+id/pb8"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <TextView
             android:id="@+id/time8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
 
         <ProgressBar
             android:id="@+id/pb16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
         <ProgressBar
             android:id="@+id/pb24"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/time24"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text=""
+            android:layout_weight="1"/>
 
     </LinearLayout>
 
