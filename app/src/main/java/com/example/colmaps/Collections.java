@@ -50,9 +50,8 @@ class Rand {
 class FillingCollections {
     public static ArrayList<Integer> colArrayList = new ArrayList<>();
     public static LinkedList<Integer> colLinkedList = new LinkedList<>();
-    public static CopyOnWriteArrayList
-            colCopyOnWriteArrayList =
-            new CopyOnWriteArrayList();
+    public static CopyOnWriteArrayList <Integer> colCopyOnWriteArrayList =
+            new CopyOnWriteArrayList<>();
 
 
     private Singletone s;
@@ -86,7 +85,7 @@ class FillingCollections {
     }
 }
 
-class ArraylistOperations extends FillingCollections {
+class ArraylistOperations {
 
     public void B_AddInBeginning(ArrayList<Integer> copyCol) {
         copyCol.add(0, Rand.randomInt());
@@ -122,7 +121,7 @@ class ArraylistOperations extends FillingCollections {
     }
 }
 
-class LinkedListOperations extends FillingCollections {
+class LinkedListOperations {
 
     public void B_AddInBeginning(LinkedList<Integer> copyCol) {
         copyCol.addFirst(Rand.randomInt());
@@ -157,7 +156,7 @@ class LinkedListOperations extends FillingCollections {
     }
 }
 
-class CopyOnWriteArrayListOperations extends FillingCollections {
+class CopyOnWriteArrayListOperations {
 
     public void B_AddInBeginning(CopyOnWriteArrayList<Integer> copyCol) {
         copyCol.add(0, Rand.randomInt());
@@ -259,13 +258,13 @@ public class Collections extends Fragment {
         List<myCallableTask> tasks = new ArrayList<>();
 
         for (int fillColIt = 0; fillColIt <= 2; fillColIt++) {
-            tasks.add(new myCallableTask(fillCol[fillColIt], operations0[0], operations1[0], operations2[0], fillingCollections, arraylistOperations,
-                    linkedListOperations, copyOnWriteArrayListOperations, 0, fillColIt, mHandler));
+            tasks.add(new myCallableTask(fillCol[fillColIt], null, null, null, fillingCollections, null,
+                    null, null, 0, fillColIt, mHandler));
         }
 
         for (int it = 1; it <= 7; it++) {
             for (int collections = 0; collections <= 2; collections++) {
-                tasks.add(new myCallableTask(fillCol[0], operations0[it - 1], operations1[it - 1], operations2[it - 1], fillingCollections, arraylistOperations,
+                tasks.add(new myCallableTask(null, operations0[it - 1], operations1[it - 1], operations2[it - 1], null, arraylistOperations,
                         linkedListOperations, copyOnWriteArrayListOperations, it, collections, mHandler));
 
             }

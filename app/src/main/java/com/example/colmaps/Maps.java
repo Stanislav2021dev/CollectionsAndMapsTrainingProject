@@ -145,13 +145,13 @@ public class Maps extends Fragment {
         List<myCallableTask> tasks = new ArrayList<>();
 
         for (int fillMapIt = 0; fillMapIt <= 1; fillMapIt++) {
-            tasks.add(new myCallableTask(fillMaps[fillMapIt], operations0[0], operations1[0], fillingMaps, hashMapOperations,
-                    treeMapOperations, 0, fillMapIt, mHandler));
+            tasks.add(new myCallableTask(fillMaps[fillMapIt], null, null, fillingMaps, null,
+                    null, 0, fillMapIt, mHandler));
         }
 
         for (int it = 1; it <= 3; it++) {
             for (int maps = 0; maps <= 1; maps++) {
-                tasks.add(new myCallableTask(fillMaps[0], operations0[it - 1], operations1[it - 1], fillingMaps, hashMapOperations,
+                tasks.add(new myCallableTask(null, operations0[it - 1], operations1[it - 1], null, hashMapOperations,
                         treeMapOperations, it, maps, mHandler));
 
             }
