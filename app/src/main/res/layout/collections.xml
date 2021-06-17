@@ -74,9 +74,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginStart="10dp"
             android:indeterminate="true"
             android:visibility="invisible"
-            android:layout_marginStart="10dp"/>
+            />
 
         <TextView
             android:id="@+id/time1"

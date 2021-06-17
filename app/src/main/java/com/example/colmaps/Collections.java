@@ -34,167 +34,167 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 class Rand {
+    private static final Random element = new Random();
+
     public static int randomInRange(int numEl) {
         int randomEl = (int) (Math.random() * numEl);
         return randomEl;
     }
 
     public static Integer randomInt() {
-        Random element = new Random();
         int newEl = element.nextInt();
         return newEl;
     }
 }
 
-
-class ArraylistOperations {
+class FillingCollections {
     public static ArrayList<Integer> colArrayList = new ArrayList<>();
+    public static LinkedList<Integer> colLinkedList = new LinkedList<>();
+    public static CopyOnWriteArrayList
+            colCopyOnWriteArrayList =
+            new CopyOnWriteArrayList();
+
+
     private Singletone s;
 
-    public void A_FillCollection() {
+    public void A_FillArrayList() {
         s = Singletone.getInstance();
+        colArrayList.clear();
         for (int i = 0; i < s.numElements; i++) {
             colArrayList.add(Rand.randomInt());
         }
-        System.out.println("0-1: size " + colArrayList.size());
+
+
     }
 
-    public void B_AddInBeginning() {
-        colArrayList.add(0, Rand.randomInt());
-    }
-
-    public void C_AddInMiddle() {
-        colArrayList.add(Rand.randomInRange(colArrayList.size()), Rand.randomInt());
-    }
-
-    public void D_AddInEnd() {
-        colArrayList.add(Rand.randomInt());
-    }
-
-    public void E_Search() {
-        Integer searchEL = Rand.randomInt();
-        for (Integer val : colArrayList) {
-            if (searchEL.equals(val)) {
-                break;
-            }
-        }
-    }
-
-    public void F_RemoveFromBegining() {
-        colArrayList.remove(0);
-    }
-
-    public void G_RemoveInMiddle() {
-        colArrayList.remove(Rand.randomInRange(colArrayList.size()));
-    }
-
-    public void H_RemoveInEnd() {
-        colArrayList.remove(colArrayList.size() - 1);
-    }
-}
-
-class LinkedListOperations {
-    public static LinkedList<Integer> colLinkedList = new LinkedList<>();
-    private Singletone s;
-
-    public void A_FillCollection() {
+    public void B_FillLinkedList() {
         s = Singletone.getInstance();
+        colLinkedList.clear();
         for (int i = 0; i < s.numElements; i++) {
             colLinkedList.add(Rand.randomInt());
         }
-        System.out.println("1-1: size " + colLinkedList.size());
     }
 
-    public void B_AddInBeginning() {
-        colLinkedList.addFirst(Rand.randomInt());
-    }
-
-    public void C_AddInMiddle() {
-        colLinkedList.add(Rand.randomInRange(colLinkedList.size()), Rand.randomInt());
-
-    }
-
-    public void D_AddInEnd() {
-        colLinkedList.addLast(Rand.randomInt());
-    }
-
-    public void E_Search() {
-
-        Integer searchEL = Rand.randomInt();
-        for (Integer val : colLinkedList) {
-            if (searchEL.equals(val)) {
-                break;
-            }
-        }
-
-    }
-
-    public void F_RemoveFromBegining() {
-        colLinkedList.removeFirst();
-    }
-
-    public void G_RemoveInMiddle() {
-        colLinkedList.remove(Rand.randomInRange(colLinkedList.size()));
-    }
-
-    public void H_RemoveInEnd() {
-        colLinkedList.removeLast();
-    }
-}
-
-class CopyOnWriteArrayListOperations {
-    public static CopyOnWriteArrayList
-            colCopyOnWriteArrayListOperations =
-            new CopyOnWriteArrayList();
-    private Singletone s;
-
-    public void A_FillCollection() {
+    public void C_FillCopyOnWriteArrayList() {
         s = Singletone.getInstance();
+        colCopyOnWriteArrayList.clear();
+        Integer[] copy = new Integer[s.numElements];
         for (int i = 0; i < s.numElements; i++) {
-            colCopyOnWriteArrayListOperations.add(Rand.randomInt());
-
+            copy[i] = Rand.randomInt();
         }
-        System.out.println("2-1: size " + colCopyOnWriteArrayListOperations.size());
+        colCopyOnWriteArrayList = new CopyOnWriteArrayList<>(copy);
+    }
+}
+
+class ArraylistOperations extends FillingCollections {
+
+    public void B_AddInBeginning(ArrayList<Integer> copyCol) {
+        copyCol.add(0, Rand.randomInt());
     }
 
-    public void B_AddInBeginning() {
-        colCopyOnWriteArrayListOperations.add(0, Rand.randomInt());
+    public void C_AddInMiddle(ArrayList<Integer> copyCol) {
+        copyCol.add(Rand.randomInRange(copyCol.size()), Rand.randomInt());
     }
 
-    public void C_AddInMiddle() {
-        colCopyOnWriteArrayListOperations.add(Rand.randomInRange(colCopyOnWriteArrayListOperations.size()), Rand.randomInt());
-
+    public void D_AddInEnd(ArrayList<Integer> copyCol) {
+        copyCol.add(Rand.randomInt());
     }
 
-    public void D_AddInEnd() {
-        colCopyOnWriteArrayListOperations.add(Rand.randomInt());
-    }
-
-    public void E_Search() {
-
+    public void E_Search(ArrayList<Integer> copyCol) {
         Integer searchEL = Rand.randomInt();
-
-        for (Object val : colCopyOnWriteArrayListOperations) {
+        for (Integer val : copyCol) {
             if (searchEL.equals(val)) {
                 break;
             }
         }
-
     }
 
-    public void F_RemoveFromBegining() {
-        colCopyOnWriteArrayListOperations.remove(0);
+    public void F_RemoveFromBegining(ArrayList<Integer> copyCol) {
+        copyCol.remove(0);
     }
 
-    public void G_RemoveInMiddle() {
-        colCopyOnWriteArrayListOperations.remove(Rand.randomInRange(colCopyOnWriteArrayListOperations.size()));
+    public void G_RemoveInMiddle(ArrayList<Integer> copyCol) {
+        copyCol.remove(Rand.randomInRange(copyCol.size()));
     }
 
-    public void H_RemoveInEnd() {
-        colCopyOnWriteArrayListOperations.remove(colCopyOnWriteArrayListOperations.size() - 1);
+    public void H_RemoveInEnd(ArrayList<Integer> copyCol) {
+        copyCol.remove(copyCol.size() - 1);
     }
 }
 
+class LinkedListOperations extends FillingCollections {
+
+    public void B_AddInBeginning(LinkedList<Integer> copyCol) {
+        copyCol.addFirst(Rand.randomInt());
+    }
+
+    public void C_AddInMiddle(LinkedList<Integer> copyCol) {
+        copyCol.add(Rand.randomInRange(copyCol.size()), Rand.randomInt());
+    }
+
+    public void D_AddInEnd(LinkedList<Integer> copyCol) {
+        copyCol.addLast(Rand.randomInt());
+    }
+
+    public void E_Search(LinkedList<Integer> copyCol) {
+        Integer searchEL = Rand.randomInt();
+        for (Integer val : copyCol) {
+            if (searchEL.equals(val)) {
+                break;
+            }
+        }
+    }
+
+    public void F_RemoveFromBegining(LinkedList<Integer> copyCol) {
+        copyCol.removeFirst();
+    }
+
+    public void G_RemoveInMiddle(LinkedList<Integer> copyCol) {
+        copyCol.remove(Rand.randomInRange(copyCol.size()));
+    }
+    public void H_RemoveInEnd(LinkedList<Integer> copyCol) {
+        copyCol.removeLast();
+    }
+}
+
+class CopyOnWriteArrayListOperations extends FillingCollections {
+
+    public void B_AddInBeginning(CopyOnWriteArrayList<Integer> copyCol) {
+        copyCol.add(0, Rand.randomInt());
+    }
+
+    public void C_AddInMiddle(CopyOnWriteArrayList<Integer> copyCol) {
+        copyCol.add(Rand.randomInRange(copyCol.size()), Rand.randomInt());
+
+    }
+
+    public void D_AddInEnd(CopyOnWriteArrayList<Integer> copyCol) {
+        copyCol.add(Rand.randomInt());
+    }
+
+    public void E_Search(CopyOnWriteArrayList<Integer> copyCol) {
+
+        Integer searchEL = Rand.randomInt();
+
+        for (Integer val : copyCol) {
+            if (searchEL.equals(val)) {
+                break;
+            }
+        }
+    }
+
+    public void F_RemoveFromBegining(CopyOnWriteArrayList<Integer> copyCol) {
+        copyCol.remove(0);
+    }
+
+    public void G_RemoveInMiddle(CopyOnWriteArrayList<Integer> copyCol) {
+        copyCol.remove(Rand.randomInRange(copyCol.size()));
+    }
+
+    public void H_RemoveInEnd(CopyOnWriteArrayList<Integer> copyCol) {
+        copyCol.remove(copyCol.size() - 1);
+    }
+}
 
 public class Collections extends Fragment {
 
@@ -215,15 +215,12 @@ public class Collections extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment1, container, false);
+        View view = inflater.inflate(R.layout.collections, container, false);
         unbinder = ButterKnife.bind(this, view);
-
         mHandler = new Handler() {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case startProcess:
-                        System.out.println("Старт " + msg.arg1 + " " + msg.arg2);
                         pbList.get((msg.arg1 + 1) + (msg.arg2 * 8) - 1).setVisibility(getView().VISIBLE);
                         break;
                     case endProcess:
@@ -233,10 +230,8 @@ public class Collections extends Fragment {
                 }
             }
         };
-
         return view;
     }
-
     @OnClick(R.id.testCol)
     public void butclick() {
         s = Singletone.getInstance();
@@ -245,34 +240,37 @@ public class Collections extends Fragment {
             tv.setText("");
         }
 
+        FillingCollections fillingCollections = new FillingCollections();
         ArraylistOperations arraylistOperations = new ArraylistOperations();
         LinkedListOperations linkedListOperations = new LinkedListOperations();
         CopyOnWriteArrayListOperations
                 copyOnWriteArrayListOperations =
                 new CopyOnWriteArrayListOperations();
 
+        Method[] fillCol = FillingCollections.class.getDeclaredMethods();
         Method[] operations0 = ArraylistOperations.class.getDeclaredMethods();
         Method[] operations1 = LinkedListOperations.class.getDeclaredMethods();
         Method[] operations2 = CopyOnWriteArrayListOperations.class.getDeclaredMethods();
 
+        int numThreads = Runtime.getRuntime().availableProcessors() - 1;
         ExecutorService
                 executorService =
-                Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 1);
-
+                Executors.newFixedThreadPool(numThreads);
         List<myCallableTask> tasks = new ArrayList<>();
-        for (int it = 0; it <= 7; it++) {
-            for (int collections = 0; collections <= 2; collections++) {
-                tasks.add(new myCallableTask(operations0[it], operations1[it], operations2[it], arraylistOperations, linkedListOperations, copyOnWriteArrayListOperations, it, collections, mHandler));
-            }
+
+        for (int fillColIt = 0; fillColIt <= 2; fillColIt++) {
+            tasks.add(new myCallableTask(fillCol[fillColIt], operations0[0], operations1[0], operations2[0], fillingCollections, arraylistOperations,
+                    linkedListOperations, copyOnWriteArrayListOperations, 0, fillColIt, mHandler));
         }
 
+        for (int it = 1; it <= 7; it++) {
+            for (int collections = 0; collections <= 2; collections++) {
+                tasks.add(new myCallableTask(fillCol[0], operations0[it - 1], operations1[it - 1], operations2[it - 1], fillingCollections, arraylistOperations,
+                        linkedListOperations, copyOnWriteArrayListOperations, it, collections, mHandler));
 
+            }
+        }
         for (myCallableTask task : tasks) {
-            //try {
-            //     TimeUnit.MICROSECONDS.sleep(1000);
-            //} catch (InterruptedException e) {
-            //    e.printStackTrace();
-            //}
             executorService.submit(task);
         }
         executorService.shutdown();
@@ -293,77 +291,81 @@ public class Collections extends Fragment {
         private final Method m0;
         private final Method m1;
         private final Method m2;
+        private final Method method;
+        private final FillingCollections fillingCollections;
         private final ArraylistOperations arraylistOperations;
         private final LinkedListOperations linkedListOperations;
         private final CopyOnWriteArrayListOperations copyOnWriteArrayListOperations;
         private final Handler mHandler;
-        private int time;
         private long startTime;
+        private int time;
 
-
-        public myCallableTask(Method m0, Method m1, Method m2, ArraylistOperations arraylistOperations, LinkedListOperations linkedListOperations, CopyOnWriteArrayListOperations copyOnWriteArrayListOperations, int it, int collections, Handler mHandler) {
+        public myCallableTask(Method method, Method m0, Method m1, Method m2, FillingCollections fillingCollections,
+                              ArraylistOperations arraylistOperations, LinkedListOperations linkedListOperations,
+                              CopyOnWriteArrayListOperations copyOnWriteArrayListOperations,
+                              int it, int collections, Handler mHandler) {
             this.collections = collections;
             this.it = it;
             this.m0 = m0;
             this.m1 = m1;
             this.m2 = m2;
+            this.method = method;
             this.arraylistOperations = arraylistOperations;
             this.linkedListOperations = linkedListOperations;
             this.copyOnWriteArrayListOperations = copyOnWriteArrayListOperations;
             this.mHandler = mHandler;
-
+            this.fillingCollections = fillingCollections;
         }
 
         @Override
-        public Integer call() throws Exception {
-
+        public Integer call() {
             try {
                 Message msg =
                         mHandler.obtainMessage(startProcess, it, collections, 0);
                 mHandler.sendMessage(msg);
 
-
-                switch (collections) {
-                    case (0):
-                        synchronized (arraylistOperations) {
-                            startTime = System.currentTimeMillis();
-                            m0.invoke(arraylistOperations);
-                            break;
-                        }
-
-                    case (1):
-                        synchronized (linkedListOperations) {
-                            startTime = System.currentTimeMillis();
-                            m1.invoke(linkedListOperations);
-                            break;
-                        }
-
-                    case (2):
-                        synchronized (copyOnWriteArrayListOperations) {
-                            startTime = System.currentTimeMillis();
-                            m2.invoke(copyOnWriteArrayListOperations);
-                        }
-
+                if (it == 0) {
+                    startTime = System.currentTimeMillis();
+                    method.invoke(fillingCollections);
                 }
-
+                else {
+                    switch (collections) {
+                        case (0):
+                            while (FillingCollections.colArrayList.size() < s.numElements) {
+                            }
+                            ArrayList<Integer> copyCol0 =
+                                    new ArrayList<>(FillingCollections.colArrayList);
+                            startTime = System.currentTimeMillis();
+                            m0.invoke(arraylistOperations, copyCol0);
+                            break;
+                        case (1):
+                            while (FillingCollections.colLinkedList.size() < s.numElements) {
+                            }
+                            LinkedList<Integer> copyCol1 =
+                                    new LinkedList<>(FillingCollections.colLinkedList);
+                            startTime = System.currentTimeMillis();
+                            m1.invoke(linkedListOperations, copyCol1);
+                            break;
+                        case (2):
+                            while (FillingCollections.colCopyOnWriteArrayList.size() < s.numElements) {
+                            }
+                            CopyOnWriteArrayList<Integer>
+                                    copyCol2 =new CopyOnWriteArrayList<>(FillingCollections.colCopyOnWriteArrayList);
+                            startTime = System.currentTimeMillis();
+                            m2.invoke(copyOnWriteArrayListOperations, copyCol2);
+                            break;
+                    }
+                }
                 long duration = System.currentTimeMillis() - startTime;
                 time = Integer.parseInt(String.valueOf(duration));
                 TimeUnit.SECONDS.sleep(1);
-                msg =
-                        mHandler.obtainMessage(endProcess, it, collections, time);
+                msg = mHandler.obtainMessage(endProcess, it, collections, time);
                 mHandler.sendMessage(msg);
 
-
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            } catch (IllegalAccessException | InvocationTargetException | InterruptedException e) {
                 e.printStackTrace();
             }
-
             return null;
         }
     }
-
 }
