@@ -1,235 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/Tv2"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:text="Maps"/>
+        style="@style/textTitle"
+        android:text="@string/maps"/>
 
     <EditText
         android:id="@+id/numMaps"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:hint="Number elements" />
+        android:hint="@string/number_elements"
+         />
 
     <Button
         android:id="@+id/testMap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Test" />
+        android:text="@string/test" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
+       style="@style/mLaTitle">
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:text="Hash Map"
-            android:textStyle="bold"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"/>
+            style="@style/textTitle"
+            android:text="@string/hash_map"/>
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:text="Tree Map"
-            android:textStyle="bold"
-            android:layout_weight="1"/>
-
+            style="@style/textTitle"
+            android:text="@string/tree_map"/>
     </LinearLayout>
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:text="Filling maps"
-        android:textStyle="bold"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        />
+        style="@style/textTitle"
+        android:text="@string/filling_maps"/>
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
+       style="@style/mLaResult">
         <ProgressBar
             android:id="@+id/pb1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:visibility="invisible" />
-
+            style="@style/myPb" />
         <TextView
             android:id="@+id/time1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:text="" />
-
+            style="@style/timeResult" />
         <ProgressBar
             android:id="@+id/pb5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:indeterminate="true"
-            android:visibility="invisible" />
-
+            style="@style/myPb" />
         <TextView
             android:id="@+id/time5"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="" />
+            style="@style/timeResult" />
     </LinearLayout>
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:text="Add element"
-        android:textStyle="bold"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        />
+        style="@style/textTitle"
+        android:text="@string/add_element"/>
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
+        style="@style/mLaResult">
         <ProgressBar
             android:id="@+id/pb2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:indeterminate="true"
-            android:visibility="invisible" />
-
+            style="@style/myPb" />
         <TextView
             android:id="@+id/time2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:text="" />
-
+            style="@style/timeResult" />
         <ProgressBar
             android:id="@+id/pb6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:indeterminate="true"
-            android:visibility="invisible" />
-
+            style="@style/myPb" />
         <TextView
             android:id="@+id/time6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="" />
+            style="@style/timeResult"/>
     </LinearLayout>
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:text="Search element"
-        android:textStyle="bold"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        />
+        style="@style/textTitle"
+        android:text="@string/search_element"/>
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
+        style="@style/mLaResult">
         <ProgressBar
             android:id="@+id/pb3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:indeterminate="true"
-            android:visibility="invisible" />
-
+            style="@style/myPb" />
         <TextView
             android:id="@+id/time3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:text="" />
-
+            style="@style/timeResult"/>
         <ProgressBar
             android:id="@+id/pb7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:indeterminate="true"
-            android:visibility="invisible" />
-
+            style="@style/myPb" />
         <TextView
             android:id="@+id/time7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="" />
+            style="@style/timeResult" />
     </LinearLayout>
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:text="Remove element"
-        android:textStyle="bold"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
+        style="@style/textTitle"
+        android:text="@string/remove_element"
         />
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
+        style="@style/mLaResult">
         <ProgressBar
             android:id="@+id/pb4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:indeterminate="true"
-            android:visibility="invisible" />
-
+            style="@style/myPb" />
         <TextView
             android:id="@+id/time4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:text="" />
-
+            style="@style/timeResult"/>
         <ProgressBar
             android:id="@+id/pb8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:indeterminate="true"
-            android:visibility="invisible" />
-
+            style="@style/myPb" />
         <TextView
             android:id="@+id/time8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="" />
+            style="@style/timeResult" />
     </LinearLayout>
-
-
 </LinearLayout>
+</ScrollView>

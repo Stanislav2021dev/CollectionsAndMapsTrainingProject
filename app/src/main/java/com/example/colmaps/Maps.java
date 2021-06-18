@@ -34,18 +34,20 @@ import butterknife.Unbinder;
 
 
 class FillingMaps {
-   public static HashMap<Integer, Integer> hashMap = new HashMap<>();
-   public static TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+    public static HashMap<Integer, Integer> hashMap = new HashMap<>();
+    public static TreeMap<Integer, Integer> treeMap = new TreeMap<>();
     private Singletone s;
+
     public void A_FillHashMap() {
-        s=Singletone.getInstance();
-        for (int i = 0; i <s.numElementsMap ; i++) {
+        s = Singletone.getInstance();
+        for (int i = 0; i < s.numElementsMap; i++) {
             hashMap.put(i, Rand.randomInt());
         }
     }
+
     public void B_fillTreeMap() {
-        s=Singletone.getInstance();
-        for (int i = 0; i <s.numElementsMap ; i++) {
+        s = Singletone.getInstance();
+        for (int i = 0; i < s.numElementsMap; i++) {
             treeMap.put(i, Rand.randomInt());
         }
     }
@@ -53,50 +55,52 @@ class FillingMaps {
 
 class HashMapOperations {
 
-    public void B_addElement(HashMap<Integer,Integer> copyMap) {
-        copyMap.put(Rand.randomInt(),Rand.randomInt());
+    public void B_addElement(HashMap<Integer, Integer> copyMap) {
+        copyMap.put(Rand.randomInt(), Rand.randomInt());
     }
 
-    public void C_searchElement(HashMap<Integer,Integer> copyMap) {
+    public void C_searchElement(HashMap<Integer, Integer> copyMap) {
 
         copyMap.containsKey(Rand.randomInRange(copyMap.size()));
     }
 
-    public void D_removeElement(HashMap<Integer,Integer> copyMap) {
+    public void D_removeElement(HashMap<Integer, Integer> copyMap) {
         copyMap.remove(Rand.randomInRange(copyMap.size()));
     }
 }
+
 class TreeMapOperations {
 
     private Singletone s;
 
 
-    public void B_addElement(TreeMap<Integer,Integer> copyMap) {
-        copyMap.put(Rand.randomInt(),Rand.randomInt());
+    public void B_addElement(TreeMap<Integer, Integer> copyMap) {
+        copyMap.put(Rand.randomInt(), Rand.randomInt());
     }
 
-    public void C_searchElement(TreeMap<Integer,Integer> copyMap) {
+    public void C_searchElement(TreeMap<Integer, Integer> copyMap) {
         copyMap.containsKey(Rand.randomInRange(copyMap.size()));
     }
 
-    public void D_removeElement(TreeMap<Integer,Integer> copyMap) {
+    public void D_removeElement(TreeMap<Integer, Integer> copyMap) {
         copyMap.remove(Rand.randomInRange(copyMap.size()));
     }
 }
 
 public class Maps extends Fragment {
-    private Button test;
     final int startProcess = 0;
     final int endProcess = 1;
-    private Handler mHandler;
-    private Singletone s;
-    private Unbinder unbinder;
     @BindViews({R.id.time1, R.id.time2, R.id.time3, R.id.time4, R.id.time5, R.id.time6, R.id.time7, R.id.time8})
     List<TextView> tvList;
     @BindViews({R.id.pb1, R.id.pb2, R.id.pb3, R.id.pb4, R.id.pb5, R.id.pb6, R.id.pb7, R.id.pb8})
     List<ProgressBar> pbList;
     @BindView(R.id.numMaps)
-    EditText numMaps;
+    EditText numElements;
+    private Button test;
+    private Handler mHandler;
+    private Singletone s;
+    private Unbinder unbinder;
+    private final int[] res = new int[8];
 
     @Nullable
     @Override
@@ -108,25 +112,43 @@ public class Maps extends Fragment {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case startProcess:
-                        pbList.get((msg.arg1 + 1) + (msg.arg2 * 4) - 1).setVisibility(getView().VISIBLE);
+                        pbList.get((msg.arg1 + 1) + (msg.arg2 * 4) - 1).setVisibility(View.VISIBLE);
                         break;
                     case endProcess:
-                        pbList.get((msg.arg1 + 1) + (msg.arg2 * 4) - 1).setVisibility(getView().GONE);
-                        tvList.get((msg.arg1 + 1) + (msg.arg2 * 4) - 1).setText(msg.obj + "ms");
+                        pbList.get((msg.arg1 + 1) + (msg.arg2 * 4) - 1).setVisibility(View.GONE);
+                        tvList.get((msg.arg1 + 1) + (msg.arg2 * 4) - 1).setText(msg.obj + " ms");
+                        tvList.get((msg.arg1 + 1) + (msg.arg2 * 4) - 1).setVisibility(View.VISIBLE);
                         break;
                 }
             }
         };
-
+        if (!(savedInstanceState == null)) {
+            int[] timeResult;
+            timeResult = savedInstanceState.getIntArray("res");
+            for (int i = 0; i <= tvList.size() - 1; i++) {
+                tvList.get(i).setText(timeResult[i] + " ms");
+            }
+        }
         return view;
+    }
+
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntArray("res", res);
     }
 
     @OnClick(R.id.testMap)
     public void butClick() {
         s = Singletone.getInstance();
-        s.numElementsMap = Integer.parseInt(numMaps.getText().toString());
+        if (numElements.getText().toString().isEmpty()){
+            numElements.setHint("Enter the value!");
+            return;
+        }
+        s.numElementsMap = Integer.parseInt(numElements.getText().toString());
         for (TextView tv : tvList) {
             tv.setText("");
+            getView();
+            tv.setVisibility(View.GONE);
         }
 
         FillingMaps fillingMaps = new FillingMaps();
@@ -142,21 +164,21 @@ public class Maps extends Fragment {
         ExecutorService
                 executorService =
                 Executors.newFixedThreadPool(numThreads);
-        List<myCallableTask> tasks = new ArrayList<>();
+        List<MyCallableTask> tasks = new ArrayList<>();
 
         for (int fillMapIt = 0; fillMapIt <= 1; fillMapIt++) {
-            tasks.add(new myCallableTask(fillMaps[fillMapIt], null, null, fillingMaps, null,
+            tasks.add(new MyCallableTask(fillMaps[fillMapIt], null, null, fillingMaps, null,
                     null, 0, fillMapIt, mHandler));
         }
 
         for (int it = 1; it <= 3; it++) {
             for (int maps = 0; maps <= 1; maps++) {
-                tasks.add(new myCallableTask(null, operations0[it - 1], operations1[it - 1], null, hashMapOperations,
+                tasks.add(new MyCallableTask(null, operations0[it - 1], operations1[it - 1], null, hashMapOperations,
                         treeMapOperations, it, maps, mHandler));
 
             }
         }
-        for (myCallableTask task : tasks) {
+        for (MyCallableTask task : tasks) {
             executorService.submit(task);
         }
         executorService.shutdown();
@@ -170,7 +192,7 @@ public class Maps extends Fragment {
         }
     }
 
- class myCallableTask implements Callable<Integer> {
+    class MyCallableTask implements Callable<Integer> {
 
         private final int it;
         private final int maps;
@@ -184,7 +206,7 @@ public class Maps extends Fragment {
         private long startTime;
         private int time;
 
-        public myCallableTask(Method method, Method m0, Method m1, FillingMaps fillingMaps,
+        public MyCallableTask(Method method, Method m0, Method m1, FillingMaps fillingMaps,
                               HashMapOperations hashMapOperations, TreeMapOperations treeMapOperations,
                               int it, int maps, Handler mHandler) {
             this.maps = maps;
@@ -213,18 +235,17 @@ public class Maps extends Fragment {
                         case (0):
                             while (FillingMaps.hashMap.size() < s.numElementsMap) {
                             }
-                            HashMap<Integer,Integer> copyMap0= new HashMap<>(FillingMaps.hashMap);
+                            HashMap<Integer, Integer> copyMap0 = new HashMap<>(FillingMaps.hashMap);
                             startTime = System.currentTimeMillis();
                             m0.invoke(hashMapOperations, copyMap0);
                             break;
                         case (1):
                             while (FillingMaps.treeMap.size() < s.numElementsMap) {
                             }
-                            TreeMap<Integer,Integer> copyMap1=new TreeMap<>(FillingMaps.treeMap);
+                            TreeMap<Integer, Integer> copyMap1 = new TreeMap<>(FillingMaps.treeMap);
                             startTime = System.currentTimeMillis();
                             m1.invoke(treeMapOperations, copyMap1);
                             break;
-
                     }
                 }
                 long duration = System.currentTimeMillis() - startTime;
@@ -232,6 +253,7 @@ public class Maps extends Fragment {
                 TimeUnit.SECONDS.sleep(1);
                 msg = mHandler.obtainMessage(endProcess, it, maps, time);
                 mHandler.sendMessage(msg);
+                res[(it + 1) + (maps * 4) - 1] = time;
             } catch (IllegalAccessException | InterruptedException | InvocationTargetException e) {
                 e.printStackTrace();
             }

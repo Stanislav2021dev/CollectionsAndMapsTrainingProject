@@ -1,6 +1,5 @@
 package com.example.colmaps;
 
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -50,26 +49,22 @@ class Rand {
 class FillingCollections {
     public static ArrayList<Integer> colArrayList = new ArrayList<>();
     public static LinkedList<Integer> colLinkedList = new LinkedList<>();
-    public static CopyOnWriteArrayList <Integer> colCopyOnWriteArrayList =
+    public static CopyOnWriteArrayList<Integer> colCopyOnWriteArrayList =
             new CopyOnWriteArrayList<>();
-
-
     private Singletone s;
 
     public void A_FillArrayList() {
         s = Singletone.getInstance();
         colArrayList.clear();
-        for (int i = 0; i < s.numElements; i++) {
+        for (int i = 0; i < s.numElementsCollection; i++) {
             colArrayList.add(Rand.randomInt());
         }
-
-
     }
 
     public void B_FillLinkedList() {
         s = Singletone.getInstance();
         colLinkedList.clear();
-        for (int i = 0; i < s.numElements; i++) {
+        for (int i = 0; i < s.numElementsCollection; i++) {
             colLinkedList.add(Rand.randomInt());
         }
     }
@@ -77,15 +72,15 @@ class FillingCollections {
     public void C_FillCopyOnWriteArrayList() {
         s = Singletone.getInstance();
         colCopyOnWriteArrayList.clear();
-        Integer[] copy = new Integer[s.numElements];
-        for (int i = 0; i < s.numElements; i++) {
+        Integer[] copy = new Integer[s.numElementsCollection];
+        for (int i = 0; i < s.numElementsCollection; i++) {
             copy[i] = Rand.randomInt();
         }
         colCopyOnWriteArrayList = new CopyOnWriteArrayList<>(copy);
     }
 }
 
-class ArraylistOperations {
+class ArrayListOperations {
 
     public void B_AddInBeginning(ArrayList<Integer> copyCol) {
         copyCol.add(0, Rand.randomInt());
@@ -151,6 +146,7 @@ class LinkedListOperations {
     public void G_RemoveInMiddle(LinkedList<Integer> copyCol) {
         copyCol.remove(Rand.randomInRange(copyCol.size()));
     }
+
     public void H_RemoveInEnd(LinkedList<Integer> copyCol) {
         copyCol.removeLast();
     }
@@ -206,10 +202,11 @@ public class Collections extends Fragment {
             R.id.pb16, R.id.pb17, R.id.pb18, R.id.pb19, R.id.pb20, R.id.pb21, R.id.pb22, R.id.pb23, R.id.pb24})
     List<ProgressBar> pbList;
     @BindView(R.id.numCol)
-    EditText num;
+    EditText numElements;
     private Handler mHandler;
     private Singletone s;
     private Unbinder unbinder;
+    private final int[] res = new int[24];
 
     @Nullable
     @Override
@@ -220,34 +217,53 @@ public class Collections extends Fragment {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case startProcess:
-                        pbList.get((msg.arg1 + 1) + (msg.arg2 * 8) - 1).setVisibility(getView().VISIBLE);
+                        pbList.get((msg.arg1 + 1) + (msg.arg2 * 8) - 1).setVisibility(View.VISIBLE);
                         break;
                     case endProcess:
-                        pbList.get((msg.arg1 + 1) + (msg.arg2 * 8) - 1).setVisibility(getView().GONE);
-                        tvList.get((msg.arg1 + 1) + (msg.arg2 * 8) - 1).setText(msg.obj + "ms");
+                        pbList.get((msg.arg1 + 1) + (msg.arg2 * 8) - 1).setVisibility(View.GONE);
+                        tvList.get((msg.arg1 + 1) + (msg.arg2 * 8) - 1).setText(msg.obj + " ms");
+                        tvList.get((msg.arg1 + 1) + (msg.arg2 * 8) - 1).setVisibility(View.VISIBLE);
                         break;
                 }
             }
         };
+
+        if (!(savedInstanceState == null)) {
+            int[] timeResult;
+            timeResult = savedInstanceState.getIntArray("res");
+            for (int i = 0; i <= tvList.size() - 1; i++) {
+                tvList.get(i).setText(timeResult[i] + " ms");
+            }
+        }
         return view;
     }
+
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntArray("res", res);
+    }
+
     @OnClick(R.id.testCol)
     public void butclick() {
         s = Singletone.getInstance();
-        s.numElements = Integer.parseInt(num.getText().toString());
+        if (numElements.getText().toString().isEmpty()){
+            numElements.setHint("Enter the value!");
+            return;
+        }
+        s.numElementsCollection = Integer.parseInt(numElements.getText().toString());
         for (TextView tv : tvList) {
             tv.setText("");
         }
 
         FillingCollections fillingCollections = new FillingCollections();
-        ArraylistOperations arraylistOperations = new ArraylistOperations();
+        ArrayListOperations arraylistOperations = new ArrayListOperations();
         LinkedListOperations linkedListOperations = new LinkedListOperations();
         CopyOnWriteArrayListOperations
                 copyOnWriteArrayListOperations =
                 new CopyOnWriteArrayListOperations();
 
         Method[] fillCol = FillingCollections.class.getDeclaredMethods();
-        Method[] operations0 = ArraylistOperations.class.getDeclaredMethods();
+        Method[] operations0 = ArrayListOperations.class.getDeclaredMethods();
         Method[] operations1 = LinkedListOperations.class.getDeclaredMethods();
         Method[] operations2 = CopyOnWriteArrayListOperations.class.getDeclaredMethods();
 
@@ -255,25 +271,26 @@ public class Collections extends Fragment {
         ExecutorService
                 executorService =
                 Executors.newFixedThreadPool(numThreads);
-        List<myCallableTask> tasks = new ArrayList<>();
+        List<MyCallableTask> tasks = new ArrayList<>();
 
         for (int fillColIt = 0; fillColIt <= 2; fillColIt++) {
-            tasks.add(new myCallableTask(fillCol[fillColIt], null, null, null, fillingCollections, null,
+            tasks.add(new MyCallableTask(fillCol[fillColIt], null, null, null, fillingCollections, null,
                     null, null, 0, fillColIt, mHandler));
         }
 
         for (int it = 1; it <= 7; it++) {
             for (int collections = 0; collections <= 2; collections++) {
-                tasks.add(new myCallableTask(null, operations0[it - 1], operations1[it - 1], operations2[it - 1], null, arraylistOperations,
+                tasks.add(new MyCallableTask(null, operations0[it - 1], operations1[it - 1], operations2[it - 1], null, arraylistOperations,
                         linkedListOperations, copyOnWriteArrayListOperations, it, collections, mHandler));
 
             }
         }
-        for (myCallableTask task : tasks) {
+        for (MyCallableTask task : tasks) {
             executorService.submit(task);
         }
         executorService.shutdown();
     }
+
 
     @Override
     public void onDestroyView() {
@@ -283,7 +300,7 @@ public class Collections extends Fragment {
         }
     }
 
-    class myCallableTask implements Callable<Integer> {
+    class MyCallableTask implements Callable<Integer> {
 
         private final int it;
         private final int collections;
@@ -292,15 +309,15 @@ public class Collections extends Fragment {
         private final Method m2;
         private final Method method;
         private final FillingCollections fillingCollections;
-        private final ArraylistOperations arraylistOperations;
+        private final ArrayListOperations arraylistOperations;
         private final LinkedListOperations linkedListOperations;
         private final CopyOnWriteArrayListOperations copyOnWriteArrayListOperations;
         private final Handler mHandler;
         private long startTime;
         private int time;
 
-        public myCallableTask(Method method, Method m0, Method m1, Method m2, FillingCollections fillingCollections,
-                              ArraylistOperations arraylistOperations, LinkedListOperations linkedListOperations,
+        public MyCallableTask(Method method, Method m0, Method m1, Method m2, FillingCollections fillingCollections,
+                              ArrayListOperations arraylistOperations, LinkedListOperations linkedListOperations,
                               CopyOnWriteArrayListOperations copyOnWriteArrayListOperations,
                               int it, int collections, Handler mHandler) {
             this.collections = collections;
@@ -326,11 +343,10 @@ public class Collections extends Fragment {
                 if (it == 0) {
                     startTime = System.currentTimeMillis();
                     method.invoke(fillingCollections);
-                }
-                else {
+                } else {
                     switch (collections) {
                         case (0):
-                            while (FillingCollections.colArrayList.size() < s.numElements) {
+                            while (FillingCollections.colArrayList.size() < s.numElementsCollection) {
                             }
                             ArrayList<Integer> copyCol0 =
                                     new ArrayList<>(FillingCollections.colArrayList);
@@ -338,7 +354,7 @@ public class Collections extends Fragment {
                             m0.invoke(arraylistOperations, copyCol0);
                             break;
                         case (1):
-                            while (FillingCollections.colLinkedList.size() < s.numElements) {
+                            while (FillingCollections.colLinkedList.size() < s.numElementsCollection) {
                             }
                             LinkedList<Integer> copyCol1 =
                                     new LinkedList<>(FillingCollections.colLinkedList);
@@ -346,10 +362,11 @@ public class Collections extends Fragment {
                             m1.invoke(linkedListOperations, copyCol1);
                             break;
                         case (2):
-                            while (FillingCollections.colCopyOnWriteArrayList.size() < s.numElements) {
+                            while (FillingCollections.colCopyOnWriteArrayList.size() < s.numElementsCollection) {
                             }
                             CopyOnWriteArrayList<Integer>
-                                    copyCol2 =new CopyOnWriteArrayList<>(FillingCollections.colCopyOnWriteArrayList);
+                                    copyCol2 =
+                                    new CopyOnWriteArrayList<>(FillingCollections.colCopyOnWriteArrayList);
                             startTime = System.currentTimeMillis();
                             m2.invoke(copyOnWriteArrayListOperations, copyCol2);
                             break;
@@ -360,6 +377,7 @@ public class Collections extends Fragment {
                 TimeUnit.SECONDS.sleep(1);
                 msg = mHandler.obtainMessage(endProcess, it, collections, time);
                 mHandler.sendMessage(msg);
+                res[(it + 1) + (collections * 8) - 1] = time;
 
             } catch (IllegalAccessException | InvocationTargetException | InterruptedException e) {
                 e.printStackTrace();
