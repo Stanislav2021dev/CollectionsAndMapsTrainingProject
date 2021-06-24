@@ -96,37 +96,51 @@ public class Maps extends Fragment {
     List<ProgressBar> pbList;
     @BindView(R.id.numMaps)
     EditText numElements;
-    private Button test;
+    @BindView(R.id.testMap)
+    Button butTest;
     private Handler mHandler;
     private Singletone s;
     private Unbinder unbinder;
-    private final int[] res = new int[8];
+    private String [] result = new String[8];
+    private ExecutorService executorService;
+    private boolean butFree;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.maps, container, false);
-
+        butFree=true;
         unbinder = ButterKnife.bind(this, view);
         mHandler = new Handler() {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case startProcess:
-                        pbList.get((msg.arg1 + 1) + (msg.arg2 * 4) - 1).setVisibility(View.VISIBLE);
+                        pbList.get(msg.arg1).setVisibility(View.VISIBLE);
                         break;
                     case endProcess:
-                        pbList.get((msg.arg1 + 1) + (msg.arg2 * 4) - 1).setVisibility(View.GONE);
-                        tvList.get((msg.arg1 + 1) + (msg.arg2 * 4) - 1).setText(msg.obj + " ms");
-                        tvList.get((msg.arg1 + 1) + (msg.arg2 * 4) - 1).setVisibility(View.VISIBLE);
+                        pbList.get(msg.arg1).setVisibility(View.GONE);
+                        tvList.get(msg.arg1).setText(msg.arg2 + getResources().getString(R.string.ms));
+                        tvList.get(msg.arg1).setVisibility(View.VISIBLE);
+
+                        if (executorService.isTerminated()){
+                            butTest.setEnabled(true);
+                            butFree=true;
+                        }
                         break;
                 }
             }
         };
+
         if (!(savedInstanceState == null)) {
-            int[] timeResult;
-            timeResult = savedInstanceState.getIntArray("res");
+            boolean setButStatus=savedInstanceState.getBoolean("butFree");
+            butTest.setEnabled(setButStatus);
+            String[] timeResult = savedInstanceState.getStringArray("res");
+
             for (int i = 0; i <= tvList.size() - 1; i++) {
-                tvList.get(i).setText(timeResult[i] + " ms");
+                if (timeResult[i]!=null) {
+                    tvList.get(i).setText(timeResult[i] + getResources().getString(R.string.ms));
+                    tvList.get(i).setVisibility(View.VISIBLE);
+                }
             }
         }
         return view;
@@ -134,22 +148,27 @@ public class Maps extends Fragment {
 
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putIntArray("res", res);
+        outState.putStringArray("res", result);
+        outState.putBoolean("butFree", butFree);
     }
 
     @OnClick(R.id.testMap)
     public void butClick() {
         s = Singletone.getInstance();
+        butTest.setEnabled(false);
+        butFree=false;
+
+        result=new String[8];
+
         if (numElements.getText().toString().isEmpty()){
-            numElements.setHint("Enter the value!");
+            numElements.setHint(R.string.warning);
             return;
         }
         s.numElementsMap = Integer.parseInt(numElements.getText().toString());
         for (TextView tv : tvList) {
-            tv.setText("");
-            getView();
-            tv.setVisibility(View.GONE);
+            tv.setText(R.string.empty);
         }
+
 
         FillingMaps fillingMaps = new FillingMaps();
         HashMapOperations hashMapOperations = new HashMapOperations();
@@ -161,9 +180,7 @@ public class Maps extends Fragment {
         Method[] operations1 = TreeMapOperations.class.getDeclaredMethods();
 
         int numThreads = Runtime.getRuntime().availableProcessors() - 1;
-        ExecutorService
-                executorService =
-                Executors.newFixedThreadPool(numThreads);
+        executorService = Executors.newFixedThreadPool(numThreads);
         List<MyCallableTask> tasks = new ArrayList<>();
 
         for (int fillMapIt = 0; fillMapIt <= 1; fillMapIt++) {
@@ -205,6 +222,7 @@ public class Maps extends Fragment {
         private final Handler mHandler;
         private long startTime;
         private int time;
+        private int index;
 
         public MyCallableTask(Method method, Method m0, Method m1, FillingMaps fillingMaps,
                               HashMapOperations hashMapOperations, TreeMapOperations treeMapOperations,
@@ -223,8 +241,9 @@ public class Maps extends Fragment {
         @Override
         public Integer call() {
             try {
+                index=(it + 1) + (maps * 4) - 1;
                 Message msg =
-                        mHandler.obtainMessage(startProcess, it, maps, 0);
+                        mHandler.obtainMessage(startProcess, index, 0);
                 mHandler.sendMessage(msg);
 
                 if (it == 0) {
@@ -251,9 +270,9 @@ public class Maps extends Fragment {
                 long duration = System.currentTimeMillis() - startTime;
                 time = Integer.parseInt(String.valueOf(duration));
                 TimeUnit.SECONDS.sleep(1);
-                msg = mHandler.obtainMessage(endProcess, it, maps, time);
+                msg = mHandler.obtainMessage(endProcess, index, time);
                 mHandler.sendMessage(msg);
-                res[(it + 1) + (maps * 4) - 1] = time;
+                result[Integer.parseInt(String.valueOf(index))] = String.valueOf(time);
             } catch (IllegalAccessException | InterruptedException | InvocationTargetException e) {
                 e.printStackTrace();
             }

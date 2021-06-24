@@ -1,11 +1,13 @@
 package com.example.colmaps;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,7 +18,9 @@ import androidx.fragment.app.Fragment;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -203,56 +207,89 @@ public class Collections extends Fragment {
     List<ProgressBar> pbList;
     @BindView(R.id.numCol)
     EditText numElements;
+    @BindView(R.id.testCol)
+    Button butTest;
     private Handler mHandler;
     private Singletone s;
     private Unbinder unbinder;
-    private final int[] res = new int[24];
+    private String[] result = new String[24];
+    private Boolean butFree;
+    private ExecutorService executorService;
+
+    @Override
+    public void onCreate (@Nullable Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.collections, container, false);
         unbinder = ButterKnife.bind(this, view);
+        butFree=true;
+
         mHandler = new Handler() {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case startProcess:
-                        pbList.get((msg.arg1 + 1) + (msg.arg2 * 8) - 1).setVisibility(View.VISIBLE);
+                        pbList.get(msg.arg1).setVisibility(View.VISIBLE);
                         break;
                     case endProcess:
-                        pbList.get((msg.arg1 + 1) + (msg.arg2 * 8) - 1).setVisibility(View.GONE);
-                        tvList.get((msg.arg1 + 1) + (msg.arg2 * 8) - 1).setText(msg.obj + " ms");
-                        tvList.get((msg.arg1 + 1) + (msg.arg2 * 8) - 1).setVisibility(View.VISIBLE);
+                        pbList.get(msg.arg1).setVisibility(View.GONE);
+                        tvList.get(msg.arg1).setText(msg.arg2 + getResources().getString(R.string.ms));
+                        tvList.get(msg.arg1).setVisibility(View.VISIBLE);
+
+                        if (executorService.isTerminated()){
+                            butTest.setEnabled(true);
+                            butFree=true;
+                        }
                         break;
                 }
             }
         };
 
         if (!(savedInstanceState == null)) {
-            int[] timeResult;
-            timeResult = savedInstanceState.getIntArray("res");
+            boolean setButStatus=savedInstanceState.getBoolean("butFree");
+            butTest.setEnabled(setButStatus);
+            String[] timeResult = savedInstanceState.getStringArray("res");
+
             for (int i = 0; i <= tvList.size() - 1; i++) {
-                tvList.get(i).setText(timeResult[i] + " ms");
+                if (timeResult[i]!=null) {
+                    tvList.get(i).setText(timeResult[i] + getResources().getString(R.string.ms));
+                    tvList.get(i).setVisibility(View.VISIBLE);
+                }
             }
         }
         return view;
     }
 
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putIntArray("res", res);
+        outState.putStringArray("res", result);
+        outState.putBoolean("butFree", butFree);
     }
+
 
     @OnClick(R.id.testCol)
     public void butclick() {
+
+        butTest.setEnabled(false);
+        butFree=false;
+
+        result=new String[24];
         s = Singletone.getInstance();
+
         if (numElements.getText().toString().isEmpty()){
-            numElements.setHint("Enter the value!");
-            return;
+             numElements.setHint(R.string.warning);
+              return;
         }
+
         s.numElementsCollection = Integer.parseInt(numElements.getText().toString());
         for (TextView tv : tvList) {
-            tv.setText("");
+            tv.setText(R.string.empty);
         }
 
         FillingCollections fillingCollections = new FillingCollections();
@@ -268,9 +305,8 @@ public class Collections extends Fragment {
         Method[] operations2 = CopyOnWriteArrayListOperations.class.getDeclaredMethods();
 
         int numThreads = Runtime.getRuntime().availableProcessors() - 1;
-        ExecutorService
-                executorService =
-                Executors.newFixedThreadPool(numThreads);
+
+        executorService = Executors.newFixedThreadPool(numThreads);
         List<MyCallableTask> tasks = new ArrayList<>();
 
         for (int fillColIt = 0; fillColIt <= 2; fillColIt++) {
@@ -286,11 +322,10 @@ public class Collections extends Fragment {
             }
         }
         for (MyCallableTask task : tasks) {
-            executorService.submit(task);
+                executorService.submit(task);
         }
         executorService.shutdown();
     }
-
 
     @Override
     public void onDestroyView() {
@@ -315,6 +350,7 @@ public class Collections extends Fragment {
         private final Handler mHandler;
         private long startTime;
         private int time;
+        private int index;
 
         public MyCallableTask(Method method, Method m0, Method m1, Method m2, FillingCollections fillingCollections,
                               ArrayListOperations arraylistOperations, LinkedListOperations linkedListOperations,
@@ -336,8 +372,9 @@ public class Collections extends Fragment {
         @Override
         public Integer call() {
             try {
+                index=(it + 1) + (collections * 8) - 1;
                 Message msg =
-                        mHandler.obtainMessage(startProcess, it, collections, 0);
+                        mHandler.obtainMessage(startProcess, index, 0);
                 mHandler.sendMessage(msg);
 
                 if (it == 0) {
@@ -375,10 +412,10 @@ public class Collections extends Fragment {
                 long duration = System.currentTimeMillis() - startTime;
                 time = Integer.parseInt(String.valueOf(duration));
                 TimeUnit.SECONDS.sleep(1);
-                msg = mHandler.obtainMessage(endProcess, it, collections, time);
+                msg = mHandler.obtainMessage(endProcess, index, time);
                 mHandler.sendMessage(msg);
-                res[(it + 1) + (collections * 8) - 1] = time;
-
+                result[Integer.parseInt(String.valueOf(index))] = String.valueOf(time);
+                System.out.println("res"+ Arrays.toString(result));
             } catch (IllegalAccessException | InvocationTargetException | InterruptedException e) {
                 e.printStackTrace();
             }

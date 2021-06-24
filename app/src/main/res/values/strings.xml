@@ -21,4 +21,7 @@
     <string name="remove_in_the_beginning">Remove in the beginning</string>
     <string name="remove_in_the_middle">Remove in the middle</string>
     <string name="remove_in_the_end">Remove in the end</string>
+    <string name="warning">Enter the value!</string>
+    <string name="ms"> <b> ms</b></string>
+    <string name="empty" />
 </resources>
