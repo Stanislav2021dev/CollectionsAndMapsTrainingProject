@@ -5,20 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v("MyApp","on create activity ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MyAdapter adapter = new MyAdapter(getSupportFragmentManager());
         ViewPager viewPager=findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
+
     }
     public static class MyAdapter extends FragmentPagerAdapter {
 
