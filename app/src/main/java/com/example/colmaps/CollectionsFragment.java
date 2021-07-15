@@ -43,7 +43,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-class Rand {
+class GenerateRandomElement {
     private static final Random element = new Random();
     public static int randomInRange(int numEl) {
         int randomEl = (int) (Math.random() * numEl);
@@ -70,7 +70,7 @@ class FillingCollections {
         s = Singletone.getInstance();
         colArrayList.clear();
         for (int i = 0; i < s.numElementsCollection; i++) {
-            colArrayList.add(Rand.randomInt());
+            colArrayList.add(GenerateRandomElement.randomInt());
         }
         countDownLatch1.countDown();
     }
@@ -79,7 +79,7 @@ class FillingCollections {
         s = Singletone.getInstance();
         colLinkedList.clear();
         for (int i = 0; i < s.numElementsCollection; i++) {
-            colLinkedList.add(Rand.randomInt());
+            colLinkedList.add(GenerateRandomElement.randomInt());
         }
         countDownLatch2.countDown();
 
@@ -90,7 +90,7 @@ class FillingCollections {
         colCopyOnWriteArrayList.clear();
         Integer[] copy = new Integer[s.numElementsCollection];
         for (int i = 0; i < s.numElementsCollection; i++) {
-            copy[i] = Rand.randomInt();
+            copy[i] = GenerateRandomElement.randomInt();
         }
         colCopyOnWriteArrayList = new CopyOnWriteArrayList<>(copy);
         countDownLatch3.countDown();
@@ -100,19 +100,19 @@ class FillingCollections {
 class ArrayListOperations {
 
     public void B_AddInBeginning(ArrayList<Integer> copyCol) {
-        copyCol.add(0, Rand.randomInt());
+        copyCol.add(0, GenerateRandomElement.randomInt());
     }
 
     public void C_AddInMiddle(ArrayList<Integer> copyCol) {
-        copyCol.add(Rand.randomInRange(copyCol.size()), Rand.randomInt());
+        copyCol.add(GenerateRandomElement.randomInRange(copyCol.size()), GenerateRandomElement.randomInt());
     }
 
     public void D_AddInEnd(ArrayList<Integer> copyCol) {
-        copyCol.add(Rand.randomInt());
+        copyCol.add(GenerateRandomElement.randomInt());
     }
 
     public void E_Search(ArrayList<Integer> copyCol) {
-        Integer searchEL = Rand.randomInt();
+        Integer searchEL = GenerateRandomElement.randomInt();
         for (Integer val : copyCol) {
             if (searchEL.equals(val)) {
                 break;
@@ -125,7 +125,7 @@ class ArrayListOperations {
     }
 
     public void G_RemoveInMiddle(ArrayList<Integer> copyCol) {
-        copyCol.remove(Rand.randomInRange(copyCol.size()));
+        copyCol.remove(GenerateRandomElement.randomInRange(copyCol.size()));
     }
 
     public void H_RemoveInEnd(ArrayList<Integer> copyCol) {
@@ -136,19 +136,19 @@ class ArrayListOperations {
 class LinkedListOperations {
 
     public void B_AddInBeginning(LinkedList<Integer> copyCol) {
-        copyCol.addFirst(Rand.randomInt());
+        copyCol.addFirst(GenerateRandomElement.randomInt());
     }
 
     public void C_AddInMiddle(LinkedList<Integer> copyCol) {
-        copyCol.add(Rand.randomInRange(copyCol.size()), Rand.randomInt());
+        copyCol.add(GenerateRandomElement.randomInRange(copyCol.size()), GenerateRandomElement.randomInt());
     }
 
     public void D_AddInEnd(LinkedList<Integer> copyCol) {
-        copyCol.addLast(Rand.randomInt());
+        copyCol.addLast(GenerateRandomElement.randomInt());
     }
 
     public void E_Search(LinkedList<Integer> copyCol) {
-        Integer searchEL = Rand.randomInt();
+        Integer searchEL = GenerateRandomElement.randomInt();
         for (Integer val : copyCol) {
             if (searchEL.equals(val)) {
                 break;
@@ -161,7 +161,7 @@ class LinkedListOperations {
     }
 
     public void G_RemoveInMiddle(LinkedList<Integer> copyCol) {
-        copyCol.remove(Rand.randomInRange(copyCol.size()));
+        copyCol.remove(GenerateRandomElement.randomInRange(copyCol.size()));
     }
 
     public void H_RemoveInEnd(LinkedList<Integer> copyCol) {
@@ -172,21 +172,21 @@ class LinkedListOperations {
 class CopyOnWriteArrayListOperations {
 
     public void B_AddInBeginning(CopyOnWriteArrayList<Integer> copyCol) {
-        copyCol.add(0, Rand.randomInt());
+        copyCol.add(0, GenerateRandomElement.randomInt());
     }
 
     public void C_AddInMiddle(CopyOnWriteArrayList<Integer> copyCol) {
-        copyCol.add(Rand.randomInRange(copyCol.size()), Rand.randomInt());
+        copyCol.add(GenerateRandomElement.randomInRange(copyCol.size()), GenerateRandomElement.randomInt());
 
     }
 
     public void D_AddInEnd(CopyOnWriteArrayList<Integer> copyCol) {
-        copyCol.add(Rand.randomInt());
+        copyCol.add(GenerateRandomElement.randomInt());
     }
 
     public void E_Search(CopyOnWriteArrayList<Integer> copyCol) {
 
-        Integer searchEL = Rand.randomInt();
+        Integer searchEL = GenerateRandomElement.randomInt();
 
         for (Integer val : copyCol) {
             if (searchEL.equals(val)) {
@@ -200,7 +200,7 @@ class CopyOnWriteArrayListOperations {
     }
 
     public void G_RemoveInMiddle(CopyOnWriteArrayList<Integer> copyCol) {
-        copyCol.remove(Rand.randomInRange(copyCol.size()));
+        copyCol.remove(GenerateRandomElement.randomInRange(copyCol.size()));
     }
 
     public void H_RemoveInEnd(CopyOnWriteArrayList<Integer> copyCol) {

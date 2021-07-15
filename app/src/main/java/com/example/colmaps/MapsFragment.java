@@ -42,14 +42,14 @@ class FillingMaps {
     public void A_FillHashMap() {
         s = Singletone.getInstance();
         for (int i = 0; i < s.numElementsMap; i++) {
-            hashMap.put(i, Rand.randomInt());
+            hashMap.put(i, GenerateRandomElement.randomInt());
         }
     }
 
     public void B_fillTreeMap() {
         s = Singletone.getInstance();
         for (int i = 0; i < s.numElementsMap; i++) {
-            treeMap.put(i, Rand.randomInt());
+            treeMap.put(i, GenerateRandomElement.randomInt());
         }
     }
 }
@@ -57,16 +57,16 @@ class FillingMaps {
 class HashMapOperations {
 
     public void B_addElement(HashMap<Integer, Integer> copyMap) {
-        copyMap.put(Rand.randomInt(), Rand.randomInt());
+        copyMap.put(GenerateRandomElement.randomInt(), GenerateRandomElement.randomInt());
     }
 
     public void C_searchElement(HashMap<Integer, Integer> copyMap) {
 
-        copyMap.containsKey(Rand.randomInRange(copyMap.size()));
+        copyMap.containsKey(GenerateRandomElement.randomInRange(copyMap.size()));
     }
 
     public void D_removeElement(HashMap<Integer, Integer> copyMap) {
-        copyMap.remove(Rand.randomInRange(copyMap.size()));
+        copyMap.remove(GenerateRandomElement.randomInRange(copyMap.size()));
     }
 }
 
@@ -76,15 +76,15 @@ class TreeMapOperations {
 
 
     public void B_addElement(TreeMap<Integer, Integer> copyMap) {
-        copyMap.put(Rand.randomInt(), Rand.randomInt());
+        copyMap.put(GenerateRandomElement.randomInt(), GenerateRandomElement.randomInt());
     }
 
     public void C_searchElement(TreeMap<Integer, Integer> copyMap) {
-        copyMap.containsKey(Rand.randomInRange(copyMap.size()));
+        copyMap.containsKey(GenerateRandomElement.randomInRange(copyMap.size()));
     }
 
     public void D_removeElement(TreeMap<Integer, Integer> copyMap) {
-        copyMap.remove(Rand.randomInRange(copyMap.size()));
+        copyMap.remove(GenerateRandomElement.randomInRange(copyMap.size()));
     }
 }
 
