@@ -1,8 +1,6 @@
 package com.example.colmaps;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,17 +13,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.BindViews;
@@ -37,6 +36,9 @@ import butterknife.Unbinder;
 class FillingMaps {
     public static HashMap<Integer, Integer> hashMap = new HashMap<>();
     public static TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+    public static CountDownLatch countDownLatch1 = new CountDownLatch(1);
+    public static CountDownLatch countDownLatch2 = new CountDownLatch(1);
+
     private Singletone s;
 
     public void A_FillHashMap() {
@@ -44,6 +46,7 @@ class FillingMaps {
         for (int i = 0; i < s.numElementsMap; i++) {
             hashMap.put(i, GenerateRandomElement.randomInt());
         }
+        countDownLatch1.countDown();
     }
 
     public void B_fillTreeMap() {
@@ -51,10 +54,11 @@ class FillingMaps {
         for (int i = 0; i < s.numElementsMap; i++) {
             treeMap.put(i, GenerateRandomElement.randomInt());
         }
+        countDownLatch2.countDown();
     }
 }
 
-class HashMapOperations {
+class OperationsWithHashMap {
 
     public void B_addElement(HashMap<Integer, Integer> copyMap) {
         copyMap.put(GenerateRandomElement.randomInt(), GenerateRandomElement.randomInt());
@@ -70,10 +74,7 @@ class HashMapOperations {
     }
 }
 
-class TreeMapOperations {
-
-    private Singletone s;
-
+class OperationsWithTreeMap {
 
     public void B_addElement(TreeMap<Integer, Integer> copyMap) {
         copyMap.put(GenerateRandomElement.randomInt(), GenerateRandomElement.randomInt());
@@ -88,21 +89,9 @@ class TreeMapOperations {
     }
 }
 
-public class Maps extends Fragment {
+public class MapsFragment extends Fragment {
 
-    private int pageNumber;
-    public static Maps newInstance(int page) {
-        Maps fragment = new Maps();
-        Bundle args=new Bundle();
-        args.putInt("num", page);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-
-
-    final int startProcess = 0;
-    final int endProcess = 1;
+    public static MapsViewModel mapModel;
     @BindViews({R.id.time1, R.id.time2, R.id.time3, R.id.time4, R.id.time5, R.id.time6, R.id.time7, R.id.time8})
     List<TextView> tvList;
     @BindViews({R.id.pb1, R.id.pb2, R.id.pb3, R.id.pb4, R.id.pb5, R.id.pb6, R.id.pb7, R.id.pb8})
@@ -111,114 +100,139 @@ public class Maps extends Fragment {
     EditText numElements;
     @BindView(R.id.testMap)
     Button butTest;
-    private Handler mHandler;
+    private int pageNumber;
     private Singletone s;
     private Unbinder unbinder;
-    private String [] result = new String[8];
     private ExecutorService executorService;
-    private boolean butFree;
 
+    public static MapsFragment newInstance(int page) {
+        MapsFragment mapsFragment = new MapsFragment();
+        Bundle args = new Bundle();
+        args.putInt("num", page);
+        mapsFragment.setArguments(args);
+        return mapsFragment;
+    }
 
     @Override
-    public void onCreate (@Nullable Bundle savedInstanceState){
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v("MyApp","on create");
+        Log.v("MyApp", "on create");
         pageNumber = getArguments() != null ? getArguments().getInt("num") : 2;
-
-
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.maps, container, false);
-        butFree=true;
         unbinder = ButterKnife.bind(this, view);
-        mHandler = new Handler() {
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case startProcess:
-                        pbList.get(msg.arg1).setVisibility(View.VISIBLE);
-                        break;
-                    case endProcess:
-                        pbList.get(msg.arg1).setVisibility(View.GONE);
-                        tvList.get(msg.arg1).setText(msg.arg2 + getResources().getString(R.string.ms));
-                        tvList.get(msg.arg1).setVisibility(View.VISIBLE);
+        s = Singletone.getInstance();
+        mapModel = new ViewModelProvider(this).get(MapsViewModel.class);
 
-                        if (executorService.isTerminated()){
-                            butTest.setEnabled(true);
-                            butFree=true;
-                        }
-                        break;
-                }
-            }
-        };
+        MutableLiveData<Boolean[]> liveDataPbStatus = mapModel.getStatus();
+        MutableLiveData<String[]> liveDataTimeResult = mapModel.getRes();
+        MutableLiveData<Boolean> liveDataButStatus = mapModel.getButStatus();
 
-        if (!(savedInstanceState == null)) {
-            boolean setButStatus=savedInstanceState.getBoolean("butFree");
-            butTest.setEnabled(setButStatus);
-            String[] timeResult = savedInstanceState.getStringArray("res");
-
-            for (int i = 0; i <= tvList.size() - 1; i++) {
-                if (timeResult[i]!=null) {
-                    tvList.get(i).setText(timeResult[i] + getResources().getString(R.string.ms));
-                    tvList.get(i).setVisibility(View.VISIBLE);
-                }
-            }
+        if (liveDataPbStatus == null) {
+            liveDataPbStatus.postValue(MapsViewModel.getCurrentStatus());
         }
-        return view;
-    }
 
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putStringArray("res", result);
-        outState.putBoolean("butFree", butFree);
+        liveDataPbStatus.observeForever(new Observer<Boolean[]>() {
+            @Override
+            public void onChanged(Boolean[] booleans) {
+                if (pbList == null) {
+                    unbinder = ButterKnife.bind(MapsFragment.this, view);
+                } else {
+                    for (int i = 0; i <= pbList.size() - 1; i++) {
+                        if (liveDataPbStatus.getValue()[i] != null) {
+                            if (liveDataPbStatus.getValue()[i]) {
+                                pbList.get(i).setVisibility(View.VISIBLE);
+                            } else {
+                                pbList.get(i).setVisibility(View.GONE);
+                            }
+                        }
+
+                    }
+                }
+            }
+        });
+
+        if (liveDataTimeResult == null) {
+            liveDataTimeResult.postValue(MapsViewModel.getCurrentTime());
+        }
+
+
+        liveDataTimeResult.observeForever(new Observer<String[]>() {
+            @Override
+            public void onChanged(String[] strings) {
+
+                if (tvList == null) {
+                    unbinder = ButterKnife.bind(MapsFragment.this, view);
+                } else {
+                    for (int i = 0; i <= tvList.size() - 1; i++) {
+                        if (liveDataTimeResult.getValue()[i] != null) {
+                            tvList.get(i).setText(liveDataTimeResult.getValue()[i] + " ms");
+                            tvList.get(i).setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            }
+        });
+
+
+        liveDataButStatus.observeForever(new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean booleans) {
+                if (butTest == null) {
+                    unbinder = ButterKnife.bind(MapsFragment.this, view);
+                } else {
+                    butTest.setEnabled(booleans);
+                }
+            }
+        });
+        return view;
     }
 
     @OnClick(R.id.testMap)
     public void butClick() {
         s = Singletone.getInstance();
-        butTest.setEnabled(false);
-        butFree=false;
-
-        result=new String[8];
-
-        if (numElements.getText().toString().isEmpty()){
+        if (numElements.getText().toString().isEmpty()) {
             numElements.setHint(R.string.warning);
             return;
         }
+
+        MapsViewModel.nullifyTimeResult();
+        MapsViewModel.nullifyPbStatus();
+
         s.numElementsMap = Integer.parseInt(numElements.getText().toString());
         for (TextView tv : tvList) {
-            tv.setText(R.string.empty);
+            tv.setVisibility(View.GONE);
         }
 
-
         FillingMaps fillingMaps = new FillingMaps();
-        HashMapOperations hashMapOperations = new HashMapOperations();
-        TreeMapOperations treeMapOperations = new TreeMapOperations();
-
+        OperationsWithHashMap operationsWithHashMap = new OperationsWithHashMap();
+        OperationsWithTreeMap operationsWithTreeMap = new OperationsWithTreeMap();
 
         Method[] fillMaps = FillingMaps.class.getDeclaredMethods();
-        Method[] operations0 = HashMapOperations.class.getDeclaredMethods();
-        Method[] operations1 = TreeMapOperations.class.getDeclaredMethods();
+        Method[] operations0 = OperationsWithHashMap.class.getDeclaredMethods();
+        Method[] operations1 = OperationsWithTreeMap.class.getDeclaredMethods();
 
         int numThreads = Runtime.getRuntime().availableProcessors() - 1;
         executorService = Executors.newFixedThreadPool(numThreads);
-        List<MyCallableTask> tasks = new ArrayList<>();
+        List<MapsViewModel.MyCallableTask> tasks = new ArrayList<>();
 
         for (int fillMapIt = 0; fillMapIt <= 1; fillMapIt++) {
-            tasks.add(new MyCallableTask(fillMaps[fillMapIt], null, null, fillingMaps, null,
-                    null, 0, fillMapIt, mHandler));
+            tasks.add(new MapsViewModel.MyCallableTask(fillMaps[fillMapIt], null, null, fillingMaps, null,
+                    null, 0, fillMapIt));
         }
 
         for (int it = 1; it <= 3; it++) {
             for (int maps = 0; maps <= 1; maps++) {
-                tasks.add(new MyCallableTask(null, operations0[it - 1], operations1[it - 1], null, hashMapOperations,
-                        treeMapOperations, it, maps, mHandler));
+                tasks.add(new MapsViewModel.MyCallableTask(null, operations0[it - 1], operations1[it - 1], null, operationsWithHashMap,
+                        operationsWithTreeMap, it, maps));
 
             }
         }
-        for (MyCallableTask task : tasks) {
+        for (MapsViewModel.MyCallableTask task : tasks) {
             executorService.submit(task);
         }
         executorService.shutdown();
@@ -229,77 +243,6 @@ public class Maps extends Fragment {
         super.onDestroyView();
         if (unbinder != null) {
             unbinder.unbind();
-        }
-    }
-
-    class MyCallableTask implements Callable<Integer> {
-
-        private final int it;
-        private final int maps;
-        private final Method m0;
-        private final Method m1;
-        private final Method method;
-        private final FillingMaps fillingMaps;
-        private final HashMapOperations hashMapOperations;
-        private final TreeMapOperations treeMapOperations;
-        private final Handler mHandler;
-        private long startTime;
-        private int time;
-        private int index;
-
-        public MyCallableTask(Method method, Method m0, Method m1, FillingMaps fillingMaps,
-                              HashMapOperations hashMapOperations, TreeMapOperations treeMapOperations,
-                              int it, int maps, Handler mHandler) {
-            this.maps = maps;
-            this.it = it;
-            this.m0 = m0;
-            this.m1 = m1;
-            this.method = method;
-            this.fillingMaps = fillingMaps;
-            this.hashMapOperations = hashMapOperations;
-            this.treeMapOperations = treeMapOperations;
-            this.mHandler = mHandler;
-        }
-
-        @Override
-        public Integer call() {
-            try {
-                index=(it + 1) + (maps * 4) - 1;
-                Message msg =
-                        mHandler.obtainMessage(startProcess, index, 0);
-                mHandler.sendMessage(msg);
-
-                if (it == 0) {
-                    startTime = System.currentTimeMillis();
-                    method.invoke(fillingMaps);
-                } else {
-                    switch (maps) {
-                        case (0):
-                            while (FillingMaps.hashMap.size() < s.numElementsMap) {
-                            }
-                            HashMap<Integer, Integer> copyMap0 = new HashMap<>(FillingMaps.hashMap);
-                            startTime = System.currentTimeMillis();
-                            m0.invoke(hashMapOperations, copyMap0);
-                            break;
-                        case (1):
-                            while (FillingMaps.treeMap.size() < s.numElementsMap) {
-                            }
-                            TreeMap<Integer, Integer> copyMap1 = new TreeMap<>(FillingMaps.treeMap);
-                            startTime = System.currentTimeMillis();
-                            m1.invoke(treeMapOperations, copyMap1);
-                            break;
-                    }
-                }
-                long duration = System.currentTimeMillis() - startTime;
-                time = Integer.parseInt(String.valueOf(duration));
-                TimeUnit.SECONDS.sleep(1);
-                msg = mHandler.obtainMessage(endProcess, index, time);
-                mHandler.sendMessage(msg);
-                result[Integer.parseInt(String.valueOf(index))] = String.valueOf(time);
-            } catch (IllegalAccessException | InterruptedException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-            return null;
         }
     }
 }

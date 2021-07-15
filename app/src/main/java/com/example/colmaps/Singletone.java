@@ -15,7 +15,6 @@ public class Singletone {
 
     int numElementsCollection;
     int numElementsMap;
-    boolean butFree=true;
 
     public static Singletone getInstance() {
         return ourInstance;

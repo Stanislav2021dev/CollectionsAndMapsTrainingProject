@@ -1,13 +1,7 @@
 package com.example.colmaps;
 
-import android.app.Application;
-import android.content.Context;
-import android.os.Message;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -20,11 +14,50 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
-public  class CollectionsViewModel  extends ViewModel {
-    private static MutableLiveData<String[]> timeRes=new MutableLiveData<>();
-    private static MutableLiveData<Boolean[]> pbStatus=new MutableLiveData<>();
-    private static String[] currentTime=new String[24];
-    private static Boolean[] currentStatus=new Boolean[24];
+public class CollectionsViewModel extends ViewModel {
+    private static final MutableLiveData<String[]> timeRes = new MutableLiveData<>();
+    private static final MutableLiveData<Boolean[]> pbStatus = new MutableLiveData<>();
+    private static final MutableLiveData<Boolean> butStatus = new MutableLiveData<>();
+    private static String[] currentTime = new String[24];
+    private static Boolean[] currentStatus = new Boolean[24];
+
+    public static String[] getCurrentTime() {
+        return currentTime;
+    }
+
+    public static void nullifyTimeResult() {
+        currentTime = new String[24];
+    }
+
+    public static Boolean[] getCurrentStatus() {
+        return currentStatus;
+    }
+
+    public static void nullifyPbStatus() {
+        currentStatus = new Boolean[24];
+    }
+
+    public MutableLiveData<String[]> getRes() {
+        timeRes.getValue();
+        Log.v("MyApp", "timeRes=" + Arrays.toString(timeRes.getValue()));
+        return timeRes;
+    }
+
+    public MutableLiveData<Boolean[]> getStatus() {
+        pbStatus.getValue();
+        return pbStatus;
+    }
+
+    public MutableLiveData<Boolean> getButStatus() {
+        butStatus.getValue();
+        return butStatus;
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        Log.v("MyApp", "ONClear");
+    }
 
     static class MyCallableTask implements Callable<Integer> {
 
@@ -35,20 +68,16 @@ public  class CollectionsViewModel  extends ViewModel {
         private final Method m2;
         private final Method method;
         private final FillingCollections fillingCollections;
-        private final ArrayListOperations arraylistOperations;
-        private final LinkedListOperations linkedListOperations;
-        private final CopyOnWriteArrayListOperations copyOnWriteArrayListOperations;
+        private final OperationsWithArrayList operationsWithArrayList;
+        private final OperationsWithLinkedList operationsWithLinkedList;
+        private final OperationsWithCopyOnWriteArrayList operationsWithCopyOnWriteArrayList;
         private long startTime;
         private int operationTime;
         private int index;
 
-
-
-
-
         public MyCallableTask(Method method, Method m0, Method m1, Method m2, FillingCollections fillingCollections,
-                              ArrayListOperations arraylistOperations, LinkedListOperations linkedListOperations,
-                              CopyOnWriteArrayListOperations copyOnWriteArrayListOperations,
+                              OperationsWithArrayList operationsWithArrayList, OperationsWithLinkedList operationsWithLinkedList,
+                              OperationsWithCopyOnWriteArrayList operationsWithCopyOnWriteArrayList,
                               int it, int collections) {
             this.collections = collections;
             this.it = it;
@@ -56,9 +85,9 @@ public  class CollectionsViewModel  extends ViewModel {
             this.m1 = m1;
             this.m2 = m2;
             this.method = method;
-            this.arraylistOperations = arraylistOperations;
-            this.linkedListOperations = linkedListOperations;
-            this.copyOnWriteArrayListOperations = copyOnWriteArrayListOperations;
+            this.operationsWithArrayList = operationsWithArrayList;
+            this.operationsWithLinkedList = operationsWithLinkedList;
+            this.operationsWithCopyOnWriteArrayList = operationsWithCopyOnWriteArrayList;
             this.fillingCollections = fillingCollections;
 
         }
@@ -66,13 +95,15 @@ public  class CollectionsViewModel  extends ViewModel {
         @Override
         public Integer call() {
             try {
-                index=(it + 1) + (collections * 8) - 1;
-                currentStatus[index]=true;
+                index = (it + 1) + (collections * 8) - 1;
+                currentStatus[index] = true;
                 CollectionsViewModel.pbStatus.postValue(currentStatus);
-                Log.v("MyApp", "index = "+index);
+                Log.v("MyApp", "index = " + index);
                 if (it == 0) {
+                    CollectionsViewModel.butStatus.postValue(false);
                     startTime = System.currentTimeMillis();
                     method.invoke(fillingCollections);
+
                 } else {
                     switch (collections) {
                         case (0):
@@ -80,7 +111,7 @@ public  class CollectionsViewModel  extends ViewModel {
                             ArrayList<Integer> copyCol0 =
                                     new ArrayList<>(FillingCollections.colArrayList);
                             startTime = System.currentTimeMillis();
-                            m0.invoke(arraylistOperations, copyCol0);
+                            m0.invoke(operationsWithArrayList, copyCol0);
 
                             break;
                         case (1):
@@ -88,7 +119,7 @@ public  class CollectionsViewModel  extends ViewModel {
                             LinkedList<Integer> copyCol1 =
                                     new LinkedList<>(FillingCollections.colLinkedList);
                             startTime = System.currentTimeMillis();
-                            m1.invoke(linkedListOperations, copyCol1);
+                            m1.invoke(operationsWithLinkedList, copyCol1);
 
                             break;
                         case (2):
@@ -97,18 +128,22 @@ public  class CollectionsViewModel  extends ViewModel {
                                     copyCol2 =
                                     new CopyOnWriteArrayList<>(FillingCollections.colCopyOnWriteArrayList);
                             startTime = System.currentTimeMillis();
-                            m2.invoke(copyOnWriteArrayListOperations, copyCol2);
+                            m2.invoke(operationsWithCopyOnWriteArrayList, copyCol2);
                             break;
                     }
                 }
                 long duration = System.currentTimeMillis() - startTime;
                 operationTime = Integer.parseInt(String.valueOf(duration));
                 TimeUnit.SECONDS.sleep(1);
-                currentTime[Integer.parseInt(String.valueOf(index))] = String.valueOf(operationTime);
-                Log.d("MyApp","ResultTime = "+ Arrays.toString(currentTime));
-                currentStatus[index]=false;
+                currentTime[Integer.parseInt(String.valueOf(index))] =
+                        String.valueOf(operationTime);
+                Log.d("MyApp", "ResultTime = " + Arrays.toString(currentTime));
+                currentStatus[index] = false;
                 CollectionsViewModel.timeRes.postValue(currentTime);
                 CollectionsViewModel.pbStatus.postValue(currentStatus);
+                if (!(Arrays.asList(currentTime).contains(null))) {
+                    CollectionsViewModel.butStatus.postValue(true);
+                }
 
             } catch (IllegalAccessException | InvocationTargetException | InterruptedException e) {
                 e.printStackTrace();
@@ -116,36 +151,6 @@ public  class CollectionsViewModel  extends ViewModel {
             }
             return null;
         }
-    }
-
-    public static String[] getCurrentTime(){
-        return currentTime;
-    }
-    public static void nullifyTimeResult(){
-        currentTime=new String[24];
-    }
-
-    public  MutableLiveData<String[]> getRes(){
-        timeRes.getValue();
-        Log.v("MyApp", "timeRes="+Arrays.toString(timeRes.getValue()));
-        return timeRes;
-    }
-
-    public  MutableLiveData<Boolean[]> getStatus(){
-        pbStatus.getValue();
-        return pbStatus;
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        Log.v("MyApp","ONClear");
-    }
-     public static Boolean[] getCurrentStatus(){
-        return currentStatus;
-  }
-    public static void nullifyPbStatus(){
-        currentStatus=new Boolean[24];
     }
 }
 
