@@ -247,11 +247,11 @@ public class CollectionsFragment extends Fragment {
         MutableLiveData<String[]> liveDataTimeResult = colModel.getRes();
         MutableLiveData<Boolean> liveDataButStatus = colModel.getButStatus();
 
-        if (liveDataPbStatus == null) {
-            liveDataPbStatus.postValue(CollectionsViewModel.getCurrentStatus());
+        if (liveDataPbStatus.getValue() == null) {
+            liveDataPbStatus.setValue(CollectionsViewModel.getCurrentStatus());
         }
 
-        liveDataPbStatus.observeForever(new Observer<Boolean[]>() {
+        liveDataPbStatus.observe(getViewLifecycleOwner(),new Observer<Boolean[]>() {
             @Override
             public void onChanged(Boolean[] booleans) {
                 if (pbList == null) {
@@ -271,12 +271,12 @@ public class CollectionsFragment extends Fragment {
             }
         });
 
-        if (liveDataTimeResult == null) {
-            liveDataTimeResult.postValue(CollectionsViewModel.getCurrentTime());
+       if (liveDataTimeResult.getValue() == null) {
+            liveDataTimeResult.setValue(CollectionsViewModel.getCurrentTime());
         }
 
 
-        liveDataTimeResult.observeForever(new Observer<String[]>() {
+        liveDataTimeResult.observe(getViewLifecycleOwner(), new Observer<String[]>() {
             @Override
             public void onChanged(String[] strings) {
 
@@ -294,7 +294,7 @@ public class CollectionsFragment extends Fragment {
         });
 
 
-        liveDataButStatus.observeForever(new Observer<Boolean>() {
+        liveDataButStatus.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean booleans) {
                 if (butTest == null) {

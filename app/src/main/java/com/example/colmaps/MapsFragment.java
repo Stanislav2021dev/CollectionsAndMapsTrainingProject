@@ -132,11 +132,11 @@ public class MapsFragment extends Fragment {
         MutableLiveData<String[]> liveDataTimeResult = mapModel.getRes();
         MutableLiveData<Boolean> liveDataButStatus = mapModel.getButStatus();
 
-        if (liveDataPbStatus == null) {
-            liveDataPbStatus.postValue(MapsViewModel.getCurrentStatus());
+        if (liveDataPbStatus.getValue() == null) {
+            liveDataPbStatus.setValue(MapsViewModel.getCurrentStatus());
         }
 
-        liveDataPbStatus.observeForever(new Observer<Boolean[]>() {
+        liveDataPbStatus.observe(getViewLifecycleOwner(), new Observer<Boolean[]>() {
             @Override
             public void onChanged(Boolean[] booleans) {
                 if (pbList == null) {
@@ -156,12 +156,12 @@ public class MapsFragment extends Fragment {
             }
         });
 
-        if (liveDataTimeResult == null) {
-            liveDataTimeResult.postValue(MapsViewModel.getCurrentTime());
+        if (liveDataTimeResult.getValue() == null) {
+            liveDataTimeResult.setValue(MapsViewModel.getCurrentTime());
         }
 
 
-        liveDataTimeResult.observeForever(new Observer<String[]>() {
+        liveDataTimeResult.observe(getViewLifecycleOwner(),new Observer<String[]>() {
             @Override
             public void onChanged(String[] strings) {
 
@@ -179,7 +179,7 @@ public class MapsFragment extends Fragment {
         });
 
 
-        liveDataButStatus.observeForever(new Observer<Boolean>() {
+        liveDataButStatus.observe(getViewLifecycleOwner(),new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean booleans) {
                 if (butTest == null) {
