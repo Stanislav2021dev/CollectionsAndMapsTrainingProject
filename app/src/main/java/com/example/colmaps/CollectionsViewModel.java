@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit;
 public  class CollectionsViewModel  extends ViewModel {
     private static MutableLiveData<String[]> timeRes=new MutableLiveData<>();
     private static MutableLiveData<Boolean[]> pbStatus=new MutableLiveData<>();
-   // private static String[] currentTime=new String[24];
-   // private static Boolean[] currentStatus=new Boolean[24];
+    private static String[] currentTime=new String[24];
+    private static Boolean[] currentStatus=new Boolean[24];
 
     static class MyCallableTask implements Callable<Integer> {
 
@@ -42,7 +42,7 @@ public  class CollectionsViewModel  extends ViewModel {
         private int operationTime;
         private int index;
 
-        private Singletone s;
+
 
 
 
@@ -60,18 +60,15 @@ public  class CollectionsViewModel  extends ViewModel {
             this.linkedListOperations = linkedListOperations;
             this.copyOnWriteArrayListOperations = copyOnWriteArrayListOperations;
             this.fillingCollections = fillingCollections;
-            s = Singletone.getInstance();
+
         }
 
         @Override
         public Integer call() {
-            s = Singletone.getInstance();
             try {
                 index=(it + 1) + (collections * 8) - 1;
-                //currentStatus[index]=true;
-                //CollectionsViewModel.pbStatus.postValue(currentStatus);
-                s.status[index]=true;
-                CollectionsViewModel.pbStatus.postValue(s.status);
+                currentStatus[index]=true;
+                CollectionsViewModel.pbStatus.postValue(currentStatus);
                 Log.v("MyApp", "index = "+index);
                 if (it == 0) {
                     startTime = System.currentTimeMillis();
@@ -107,11 +104,11 @@ public  class CollectionsViewModel  extends ViewModel {
                 long duration = System.currentTimeMillis() - startTime;
                 operationTime = Integer.parseInt(String.valueOf(duration));
                 TimeUnit.SECONDS.sleep(1);
-                s.result[Integer.parseInt(String.valueOf(index))] = String.valueOf(operationTime);
-                Log.d("MyApp","ResultTime = "+ Arrays.toString(s.result));
-                s.status[index]=false;
-                CollectionsViewModel.timeRes.postValue(s.result);
-                CollectionsViewModel.pbStatus.postValue(s.status);
+                currentTime[Integer.parseInt(String.valueOf(index))] = String.valueOf(operationTime);
+                Log.d("MyApp","ResultTime = "+ Arrays.toString(currentTime));
+                currentStatus[index]=false;
+                CollectionsViewModel.timeRes.postValue(currentTime);
+                CollectionsViewModel.pbStatus.postValue(currentStatus);
 
             } catch (IllegalAccessException | InvocationTargetException | InterruptedException e) {
                 e.printStackTrace();
@@ -121,22 +118,20 @@ public  class CollectionsViewModel  extends ViewModel {
         }
     }
 
-    //public static String[] getCurrentTime(){
-    //    return currentTime;
-   // }
-   // public static void nullifyTimeResult(){
-    //    currentTime=new String[24];
-   // }
+    public static String[] getCurrentTime(){
+        return currentTime;
+    }
+    public static void nullifyTimeResult(){
+        currentTime=new String[24];
+    }
 
     public  MutableLiveData<String[]> getRes(){
-      //  timeRes=new MutableLiveData<>();
         timeRes.getValue();
         Log.v("MyApp", "timeRes="+Arrays.toString(timeRes.getValue()));
         return timeRes;
     }
 
     public  MutableLiveData<Boolean[]> getStatus(){
-      //  pbStatus=new MutableLiveData<>();
         pbStatus.getValue();
         return pbStatus;
     }
@@ -146,19 +141,12 @@ public  class CollectionsViewModel  extends ViewModel {
         super.onCleared();
         Log.v("MyApp","ONClear");
     }
-
-    // public static Boolean[] getCurrentStatus(){
-   //     return currentStatus;
- // }
-
-
-  //  public static void nullifyPbStatus(){
-   //     currentStatus=new Boolean[24];
-   // }
-
-
-
-
+     public static Boolean[] getCurrentStatus(){
+        return currentStatus;
+  }
+    public static void nullifyPbStatus(){
+        currentStatus=new Boolean[24];
+    }
 }
 
 

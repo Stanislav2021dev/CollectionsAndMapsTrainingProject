@@ -220,9 +220,6 @@ public class Collections extends Fragment {
         return fragment;
     }
 
-
-
-
     @BindViews({R.id.time1, R.id.time2, R.id.time3, R.id.time4, R.id.time5, R.id.time6, R.id.time7, R.id.time8, R.id.time9, R.id.time10, R.id.time11,
             R.id.time12, R.id.time13, R.id.time14, R.id.time15, R.id.time16, R.id.time17, R.id.time18, R.id.time19, R.id.time20, R.id.time21, R.id.time22, R.id.time23, R.id.time24})
     List<TextView> tvList;
@@ -236,7 +233,6 @@ public class Collections extends Fragment {
     Button butTest;
     private Singletone s;
     private Unbinder unbinder;
-    //private static ExecutorService executorService;
     public static CollectionsViewModel colModel;
     private String result[];
     private Boolean butFree;
@@ -247,12 +243,9 @@ public class Collections extends Fragment {
         super.onCreate(savedInstanceState);
         Log.v("MyApp","on create");
             pageNumber = getArguments() != null ? getArguments().getInt("num") : 1;
-        //setRetainInstance(true);
 
     }
-    //public static ExecutorService getExecutorService(){
-    //    return executorService;
-    //}
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -264,26 +257,9 @@ public class Collections extends Fragment {
 
         MutableLiveData<Boolean[]> liveDataPbStatus=colModel.getStatus();
         MutableLiveData<String[]> liveDataTimeResult=colModel.getRes();
-/*
-        if (!(savedInstanceState == null)) {
-            boolean setButStatus=savedInstanceState.getBoolean("butFree");
-            butTest.setEnabled(setButStatus);
-            String[] timeResult = savedInstanceState.getStringArray("res");
-            liveDataTimeResult.postValue(timeResult);
-            for (int i = 0; i <= tvList.size() - 1; i++) {
-                if (timeResult[i]!=null) {
-                    tvList.get(i).setText(timeResult[i] + getResources().getString(R.string.ms));
-                    tvList.get(i).setVisibility(View.VISIBLE);
-
-                }
-            }
-        }
-
-*/
 
         if (liveDataPbStatus==null){
-            //liveDataPbStatus.postValue(CollectionsViewModel.getCurrentStatus());
-            liveDataPbStatus.postValue(s.status);
+            liveDataPbStatus.postValue(CollectionsViewModel.getCurrentStatus());
         }
 
         liveDataPbStatus.observeForever(new Observer<Boolean[]>() {
@@ -310,14 +286,14 @@ public class Collections extends Fragment {
         });
 
         if (liveDataTimeResult==null){
-            liveDataTimeResult.postValue(s.result);
+            liveDataTimeResult.postValue(CollectionsViewModel.getCurrentTime());
         }
 
 
         liveDataTimeResult.observeForever(new Observer<String[]>() {
             @Override
             public void onChanged(String[] strings) {
-                //Log.d("MyApp","time = "+ Arrays.toString(strings));
+
                 if (tvList==null) {
                   unbinder = ButterKnife.bind(Collections.this, view);
                 }
@@ -339,13 +315,6 @@ public class Collections extends Fragment {
         return view;
     };
 
-/*
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putStringArray("res", CollectionsViewModel.getCurrentTime());
-        outState.putBoolean("butFree", s.butFree);
-    }
-*/
     @Override
     public void onStart() {
         super.onStart();
@@ -391,19 +360,16 @@ public class Collections extends Fragment {
     @OnClick(R.id.testCol)
     public void butclick() {
 
+        if (numElements.getText().toString().isEmpty()){
+            numElements.setHint(R.string.warning);
+            return;
+        }
+
         butTest.setEnabled(false);
         s.butFree=false;
 
-       //CollectionsViewModel.nullifyTimeResult();
-       // CollectionsViewModel.nullifyPbStatus();
-        s.status=new Boolean[24];
-        s.result=new String[24];
-
-
-        if (numElements.getText().toString().isEmpty()){
-             numElements.setHint(R.string.warning);
-              return;
-        }
+        CollectionsViewModel.nullifyTimeResult();
+        CollectionsViewModel.nullifyPbStatus();
 
         s.numElementsCollection = Integer.parseInt(numElements.getText().toString());
         for (TextView tv : tvList) {
