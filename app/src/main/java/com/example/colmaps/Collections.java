@@ -1,5 +1,6 @@
 package com.example.colmaps;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,9 +13,12 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -204,7 +208,20 @@ class CopyOnWriteArrayListOperations {
     }
 }
 
+
 public class Collections extends Fragment {
+
+    private int pageNumber;
+    public static Collections newInstance(int page) {
+        Collections fragment = new Collections();
+        Bundle args=new Bundle();
+        args.putInt("num", page);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
+
 
     @BindViews({R.id.time1, R.id.time2, R.id.time3, R.id.time4, R.id.time5, R.id.time6, R.id.time7, R.id.time8, R.id.time9, R.id.time10, R.id.time11,
             R.id.time12, R.id.time13, R.id.time14, R.id.time15, R.id.time16, R.id.time17, R.id.time18, R.id.time19, R.id.time20, R.id.time21, R.id.time22, R.id.time23, R.id.time24})
@@ -219,18 +236,23 @@ public class Collections extends Fragment {
     Button butTest;
     private Singletone s;
     private Unbinder unbinder;
-    private ExecutorService executorService;
+    //private static ExecutorService executorService;
     public static CollectionsViewModel colModel;
-    public LiveDataTime liveDataTimeResult;
-    public LiveDataPbStatus liveDataPbStatus;
+    private String result[];
+    private Boolean butFree;
 
 
     @Override
     public void onCreate (@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         Log.v("MyApp","on create");
-    }
+            pageNumber = getArguments() != null ? getArguments().getInt("num") : 1;
+        //setRetainInstance(true);
 
+    }
+    //public static ExecutorService getExecutorService(){
+    //    return executorService;
+    //}
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -240,45 +262,70 @@ public class Collections extends Fragment {
 
         colModel= new ViewModelProvider(this).get(CollectionsViewModel.class);
 
-        liveDataPbStatus=new LiveDataPbStatus();
+        MutableLiveData<Boolean[]> liveDataPbStatus=colModel.getStatus();
+        MutableLiveData<String[]> liveDataTimeResult=colModel.getRes();
+/*
+        if (!(savedInstanceState == null)) {
+            boolean setButStatus=savedInstanceState.getBoolean("butFree");
+            butTest.setEnabled(setButStatus);
+            String[] timeResult = savedInstanceState.getStringArray("res");
+            liveDataTimeResult.postValue(timeResult);
+            for (int i = 0; i <= tvList.size() - 1; i++) {
+                if (timeResult[i]!=null) {
+                    tvList.get(i).setText(timeResult[i] + getResources().getString(R.string.ms));
+                    tvList.get(i).setVisibility(View.VISIBLE);
+
+                }
+            }
+        }
+
+*/
+
         if (liveDataPbStatus==null){
+            //liveDataPbStatus.postValue(CollectionsViewModel.getCurrentStatus());
             liveDataPbStatus.postValue(s.status);
         }
-        liveDataPbStatus.observeForever(new Observer<boolean[]>() {
+
+        liveDataPbStatus.observeForever(new Observer<Boolean[]>() {
             @Override
-            public void onChanged(boolean[] booleans) {
+            public void onChanged(Boolean[] booleans) {
                 if (pbList==null) {
-                    unbinder = ButterKnife.bind(this, view);
+                    unbinder = ButterKnife.bind(Collections.this, view);
                 }
                 else {
                     for (int i = 0; i <= pbList.size() - 1; i++) {
-                        if (s.status[i]) {
-                            pbList.get(i).setVisibility(View.VISIBLE);
-                        }
-                        else
-                            {
-                            pbList.get(i).setVisibility(View.GONE);
+                        if (liveDataPbStatus.getValue()[i]!=null){
+                            if (liveDataPbStatus.getValue()[i]) {
+                                pbList.get(i).setVisibility(View.VISIBLE);
                             }
+                            else
+                            {
+                                pbList.get(i).setVisibility(View.GONE);
+                            }
+                        }
+
                     }
                 }
             }
         });
 
-        liveDataTimeResult=new LiveDataTime();
         if (liveDataTimeResult==null){
             liveDataTimeResult.postValue(s.result);
         }
+
+
         liveDataTimeResult.observeForever(new Observer<String[]>() {
             @Override
             public void onChanged(String[] strings) {
-                Log.d("MyApp","time = "+ Arrays.toString(strings));
+                //Log.d("MyApp","time = "+ Arrays.toString(strings));
                 if (tvList==null) {
-                  unbinder = ButterKnife.bind(this, view);
+                  unbinder = ButterKnife.bind(Collections.this, view);
                 }
                 else {
                         for (int i = 0; i <= tvList.size() - 1; i++) {
                             if (liveDataTimeResult.getValue()[i] != null) {
-                               tvList.get(i).setText(liveDataTimeResult.getValue()[i] + getResources().getString(R.string.ms));
+                               tvList.get(i).setText(liveDataTimeResult.getValue()[i] + "ms");
+                             //  tvList.get(i).setText(liveDataTimeResult.getValue()[i] + getResources().getString(R.string.ms));
                                tvList.get(i).setVisibility(View.VISIBLE);
                             }
                         }
@@ -292,6 +339,13 @@ public class Collections extends Fragment {
         return view;
     };
 
+/*
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArray("res", CollectionsViewModel.getCurrentTime());
+        outState.putBoolean("butFree", s.butFree);
+    }
+*/
     @Override
     public void onStart() {
         super.onStart();
@@ -307,6 +361,8 @@ public class Collections extends Fragment {
         else butTest.setEnabled(false);
         Log.v("MyApp","on resume ");
     }
+
+
 
     @Override
     public void onPause() {
@@ -330,15 +386,19 @@ public class Collections extends Fragment {
         }
     }
 
+
+
     @OnClick(R.id.testCol)
     public void butclick() {
 
         butTest.setEnabled(false);
         s.butFree=false;
 
-        s = Singletone.getInstance();
+       //CollectionsViewModel.nullifyTimeResult();
+       // CollectionsViewModel.nullifyPbStatus();
+        s.status=new Boolean[24];
         s.result=new String[24];
-        s.status=new boolean[24];
+
 
         if (numElements.getText().toString().isEmpty()){
              numElements.setHint(R.string.warning);
@@ -364,110 +424,25 @@ public class Collections extends Fragment {
 
         int numThreads = Runtime.getRuntime().availableProcessors() - 1;
 
-        executorService = Executors.newFixedThreadPool(numThreads);
-        List<MyCallableTask> tasks = new ArrayList<>();
+        ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+
+        List<CollectionsViewModel.MyCallableTask> tasks = new ArrayList<>();
 
         for (int fillColIt = 0; fillColIt <= 2; fillColIt++) {
-            tasks.add(new MyCallableTask(fillCol[fillColIt], null, null, null, fillingCollections, null,
+            tasks.add(new CollectionsViewModel.MyCallableTask(fillCol[fillColIt], null, null, null, fillingCollections, null,
                     null, null, 0, fillColIt));
         }
 
         for (int it = 1; it <= 7; it++) {
             for (int collections = 0; collections <= 2; collections++) {
-                tasks.add(new MyCallableTask(null, operations0[it - 1], operations1[it - 1], operations2[it - 1], null, arraylistOperations,
+                tasks.add(new CollectionsViewModel.MyCallableTask(null, operations0[it - 1], operations1[it - 1], operations2[it - 1], null, arraylistOperations,
                         linkedListOperations, copyOnWriteArrayListOperations, it, collections));
             }
         }
-        for (MyCallableTask task : tasks) {
+        for (CollectionsViewModel.MyCallableTask task : tasks) {
                 executorService.submit(task);
         }
         executorService.shutdown();
     }
-
-    class MyCallableTask implements Callable<Integer> {
-
-        private final int it;
-        private final int collections;
-        private final Method m0;
-        private final Method m1;
-        private final Method m2;
-        private final Method method;
-        private final FillingCollections fillingCollections;
-        private final ArrayListOperations arraylistOperations;
-        private final LinkedListOperations linkedListOperations;
-        private final CopyOnWriteArrayListOperations copyOnWriteArrayListOperations;
-        private long startTime;
-        private int time;
-        private int index;
-
-        public MyCallableTask(Method method, Method m0, Method m1, Method m2, FillingCollections fillingCollections,
-                              ArrayListOperations arraylistOperations, LinkedListOperations linkedListOperations,
-                              CopyOnWriteArrayListOperations copyOnWriteArrayListOperations,
-                              int it, int collections) {
-            this.collections = collections;
-            this.it = it;
-            this.m0 = m0;
-            this.m1 = m1;
-            this.m2 = m2;
-            this.method = method;
-            this.arraylistOperations = arraylistOperations;
-            this.linkedListOperations = linkedListOperations;
-            this.copyOnWriteArrayListOperations = copyOnWriteArrayListOperations;
-            this.fillingCollections = fillingCollections;
-            s = Singletone.getInstance();
-        }
-
-        @Override
-        public Integer call() {
-            s = Singletone.getInstance();
-            try {
-                index=(it + 1) + (collections * 8) - 1;
-                s.status[index]=true;
-                Log.v("MyApp", "index = "+index);
-                if (it == 0) {
-                    startTime = System.currentTimeMillis();
-                    method.invoke(fillingCollections);
-                } else {
-                    switch (collections) {
-                        case (0):
-                            FillingCollections.countDownLatch1.await();
-                            ArrayList<Integer> copyCol0 =
-                                    new ArrayList<>(FillingCollections.colArrayList);
-                            startTime = System.currentTimeMillis();
-                            m0.invoke(arraylistOperations, copyCol0);
-
-                            break;
-                        case (1):
-                            FillingCollections.countDownLatch2.await();
-                            LinkedList<Integer> copyCol1 =
-                                    new LinkedList<>(FillingCollections.colLinkedList);
-                            startTime = System.currentTimeMillis();
-                            m1.invoke(linkedListOperations, copyCol1);
-
-                            break;
-                        case (2):
-                            FillingCollections.countDownLatch2.await();
-                            CopyOnWriteArrayList<Integer>
-                                    copyCol2 =
-                                    new CopyOnWriteArrayList<>(FillingCollections.colCopyOnWriteArrayList);
-                            startTime = System.currentTimeMillis();
-                            m2.invoke(copyOnWriteArrayListOperations, copyCol2);
-                            break;
-                    }
-                }
-                long duration = System.currentTimeMillis() - startTime;
-                time = Integer.parseInt(String.valueOf(duration));
-                TimeUnit.SECONDS.sleep(1);
-                s.result[Integer.parseInt(String.valueOf(index))] = String.valueOf(time);
-                s.status[index]=false;
-                liveDataTimeResult.postValue(s.result);
-                liveDataPbStatus.postValue(s.status);
-
-            } catch (IllegalAccessException | InvocationTargetException | InterruptedException e) {
-                e.printStackTrace();
-                Log.v("MyApp", "Catch");
-            }
-            return null;
-        }
-    }
 }
+

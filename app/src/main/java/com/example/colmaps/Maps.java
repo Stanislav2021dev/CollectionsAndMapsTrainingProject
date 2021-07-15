@@ -3,6 +3,7 @@ package com.example.colmaps;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,18 @@ class TreeMapOperations {
 }
 
 public class Maps extends Fragment {
+
+    private int pageNumber;
+    public static Maps newInstance(int page) {
+        Maps fragment = new Maps();
+        Bundle args=new Bundle();
+        args.putInt("num", page);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
+
     final int startProcess = 0;
     final int endProcess = 1;
     @BindViews({R.id.time1, R.id.time2, R.id.time3, R.id.time4, R.id.time5, R.id.time6, R.id.time7, R.id.time8})
@@ -104,6 +117,16 @@ public class Maps extends Fragment {
     private String [] result = new String[8];
     private ExecutorService executorService;
     private boolean butFree;
+
+
+    @Override
+    public void onCreate (@Nullable Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        Log.v("MyApp","on create");
+        pageNumber = getArguments() != null ? getArguments().getInt("num") : 2;
+
+
+    }
 
     @Nullable
     @Override

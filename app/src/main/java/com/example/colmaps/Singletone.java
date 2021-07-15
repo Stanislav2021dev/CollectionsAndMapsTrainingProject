@@ -16,7 +16,7 @@ public class Singletone {
     int numElementsCollection;
     int numElementsMap;
     String result [] =new String[24];
-    boolean status []= new boolean[24];
+    Boolean status []= new Boolean[24];
     boolean butFree=true;
 
     public static Singletone getInstance() {
